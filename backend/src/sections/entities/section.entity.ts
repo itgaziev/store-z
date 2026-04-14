@@ -10,7 +10,9 @@ export class Section {
     @Column({ nullable: true })
     uuid: string;
     
-
+    @Column({ nullable: true })
+    code: string;
+    
     @Column()
     name: string;
 

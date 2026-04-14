@@ -9,7 +9,7 @@
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "seed": "ts-node -r tsconfig-paths/register seeds/seed.ts",
+    "seed": "ts-node -r tsconfig-paths/register seeds/index.ts",
     "migration:generate": "typeorm-ts-node-commonjs -d src/config/database.config.ts migration:generate migrations/$npm_config_name",
     "migration:run": "typeorm-ts-node-commonjs -d src/config/database.config.ts migration:run",
     "migration:revert": "typeorm-ts-node-commonjs -d src/config/database.config.ts migration:revert"
