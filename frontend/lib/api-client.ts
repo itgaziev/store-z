@@ -1,3 +1,4 @@
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
 import { operations } from "./types/schema";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
@@ -34,12 +35,12 @@ function buildQueryString(params?: Record<string, string | number | boolean | un
 
 function getAccessToken(): string {
     if (typeof window === 'undefined') return '';
-    return localStorage.getItem('accessToken') || '';
+    return getCookie('accessToken')?.toString() || '';
 }
 
 function setAccessToken(token: string): void {
     if (typeof window === 'undefined') return;
-    localStorage.setItem('accessToken', token);
+    setCookie('accessToken', token, { maxAge: 60 * 60, path: '/' });
 }
 
 function getRefreshToken(): string {
@@ -54,8 +55,8 @@ function setRefreshToken(token: string): void {
 
 function clearAuthTokens(): void {
     if (typeof window === 'undefined') return;
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('refreshToken');
+    console.log('Clearing auth tokens');
+    deleteCookie('accessToken');
 }
 
 export type ApiResponse<T extends keyof operations> = 
@@ -92,6 +93,7 @@ export async function apiRequest<T>(
     const config: RequestInit = {
         ...restOptions,
         method,
+        credentials: 'include',
         headers: configHeaders,
     };
 

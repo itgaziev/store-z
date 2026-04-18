@@ -281,6 +281,28 @@ export interface components {
             /** @example password123 */
             password: string;
         };
+        User: Record<string, never>;
+        LoginResponseDto: {
+            /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
+            access_token: string;
+            /** @example 3600s */
+            expires_in: string;
+            /**
+             * @example {
+             *       "id": 1,
+             *       "email": "john@doe.ru",
+             *       "firstName": "John",
+             *       "lastName": "Doe",
+             *       "role": {
+             *         "id": 1,
+             *         "name": "user",
+             *         "createdAt": "2026-04-18T01:00:43.166Z",
+             *         "updatedAt": "2026-04-18T01:00:43.166Z"
+             *       }
+             *     }
+             */
+            user: components["schemas"]["User"];
+        };
         RegisterDto: {
             /** @example john@doe.ru */
             email: string;
@@ -290,6 +312,27 @@ export interface components {
             firstName: string;
             /** @example Doe */
             lastName: string;
+        };
+        RegisterResponseDto: {
+            /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
+            access_token: string;
+            /** @example 3600s */
+            expires_in: string;
+            /**
+             * @example {
+             *       "id": 1,
+             *       "email": "john@doe.ru",
+             *       "firstName": "John",
+             *       "lastName": "Doe",
+             *       "role": {
+             *         "id": 1,
+             *         "name": "user",
+             *         "createdAt": "2026-04-18T01:00:43.167Z",
+             *         "updatedAt": "2026-04-18T01:00:43.167Z"
+             *       }
+             *     }
+             */
+            user: components["schemas"]["User"];
         };
         CreateUserDto: Record<string, never>;
         UpdateUserDto: Record<string, never>;
@@ -385,12 +428,14 @@ export interface operations {
             };
         };
         responses: {
-            /** @description Return access token */
+            /** @description User logged in successfully */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["LoginResponseDto"];
+                };
             };
         };
     };
@@ -408,11 +453,13 @@ export interface operations {
         };
         responses: {
             /** @description User registered successfully */
-            201: {
+            200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["RegisterResponseDto"];
+                };
             };
         };
     };
@@ -425,12 +472,14 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Return new access token */
+            /** @description Access token refreshed successfully */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["LoginResponseDto"];
+                };
             };
         };
     };

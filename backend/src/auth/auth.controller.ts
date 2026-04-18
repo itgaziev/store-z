@@ -1,8 +1,8 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { LoginDto } from './dto/login.dto';
-import { RegisterDto } from './dto/register.dto';
+import { ApiBearerAuth, ApiOkResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { LoginDto, LoginResponseDto } from './dto/login.dto';
+import { RegisterDto, RegisterResponseDto } from './dto/register.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -11,14 +11,14 @@ export class AuthController {
 
     @Post('login')
     @ApiOperation({ summary: 'Login user'})
-    @ApiResponse({ status: 200, description: 'Return access token'})
+    @ApiOkResponse({ description: 'User logged in successfully', type: LoginResponseDto })
     async login(@Body() loginDto: LoginDto) {
         return this.authService.login(loginDto);
     }
 
     @Post('register')
     @ApiOperation({ summary: 'Register new user'})
-    @ApiResponse({ status: 201, description: 'User registered successfully'})
+    @ApiOkResponse({ description: 'User registered successfully', type: RegisterResponseDto })
     async register(@Body() registerDto: RegisterDto) {
         return this.authService.register(registerDto);
     }
@@ -26,7 +26,7 @@ export class AuthController {
     @Post('refresh')
     @ApiBearerAuth()
     @ApiOperation({ summary: 'Refresh access token'})
-    @ApiResponse({ status: 200, description: 'Return new access token'})
+    @ApiOkResponse({ description: 'Access token refreshed successfully', type: LoginResponseDto })
     async refresh(@Request() req: any) {
         return this.authService.refresh(req.user);
     }
