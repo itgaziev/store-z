@@ -3,7 +3,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersModule } from '@/users/users.module';
 import { PassportModule } from '@nestjs/passport';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './strategies/jwt.strategy';
 
@@ -11,21 +11,31 @@ import { JwtStrategy } from './strategies/jwt.strategy';
     imports: [
         UsersModule,
         PassportModule,
-        JwtModule.registerAsync({
-            imports: [ConfigModule],
-            useFactory: async (configService: ConfigService) => {
-                return {
-                    secret: configService.get<string>('JWT_SECRET') || 'default-secret',
-                    signOptions: {
-                        expiresIn: configService.get<string>('JWT_EXPIRES_IN') || '24h' as any
-                    },
-                };
+        ConfigModule,
+        JwtModule.register({
+            secret: process.env.JWT_SECRET || 'default-secret',
+            signOptions: {
+                expiresIn: '15m'
             },
-            inject: [ConfigService]
         }),
     ],
     controllers: [AuthController],
-    providers: [AuthService, JwtStrategy],
+    providers: [
+        AuthService,
+        JwtStrategy,
+        {
+            provide: 'JWT_REFRESH_SERVICE',
+            useFactory: (configService: ConfigService) => {
+                return new JwtService({
+                    secret: configService.get<string>('JWT_REFRESH_SECRET') || 'default-refresh-secret',
+                    signOptions: {
+                        expiresIn: '7d'
+                    }
+                });
+            },
+            inject: [ConfigService]
+        },
+    ],
     exports: [AuthService]
 })
 export class AuthModule { }

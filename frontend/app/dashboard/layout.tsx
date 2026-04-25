@@ -1,5 +1,8 @@
+'use client';
+
 import { Header } from "@/components/layout/Header";
 import { Sidebar } from "@/components/layout/Sidebar";
+import { useSidebarActions, useSidebarIsOpen, useSidebarVisible } from "@/store/use-sidebar-store";
 
 export default function DashboardLayout({
     children,
@@ -7,17 +10,24 @@ export default function DashboardLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="flex h-screen overflow-hidden bg-slate-50">
-            <Sidebar />
+        <div className="min-h-screen bg-gray-50 flex">
+            { useSidebarVisible() && (
+                <div className="hidden lg:block lg:fixed lg:inset-y-0 lg:left-0 lg:z-40 lg:w-64">
+                    <Sidebar />
+                </div>
+            )}
 
-            <div className="flex flex-col flex-1 overflow-hidden">
+            <div className={`fixed inset-0 z-40 lg:hidden ${useSidebarIsOpen() ? "block" : "hidden"}`}>
+                <div className="absolute inset-0 bg-black/50"
+                    onClick={() => useSidebarActions().setOpen(false)}/>
+                <div className="absolute inset-y-0 left-0 z-50 w-64">
+                    <Sidebar />
+                </div>
+            </div>
+
+            <div className={`flex-1 transition-all duration-300 ${useSidebarVisible() ? "lg:pl-64" : ""}`}>
                 <Header />
-
-                <main className="flex-1 overflow-y-auto px-8 py-6">
-                    <div className="max-w-7xl mx-auto space-y-6">
-                        {children}
-                    </div>
-                </main>
+                <main className="p-4 lg:p-6">{ children }</main>
             </div>
         </div>
     );
