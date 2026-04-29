@@ -4,5 +4,6 @@ export enum ModelNameEnum {
     SECTION = 'SECTION',
     USER = 'USER',
     IMAGE = 'IMAGE',
-    OFFER = 'OFFER'
+    OFFER = 'OFFER',
+    CURRENCIES = 'CURRENCIES'
 }

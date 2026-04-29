@@ -39,7 +39,7 @@ export class OffersService {
         return this.offersRepository.save(offer);
     }
 
-    async findAll(parentId: string): Promise<{ data: Offer[] }> {
+    async findAll(parentId: string): Promise<Offer[]> {
         const offers = await this.offersRepository.find({
             where: {
                 parent: { id: parentId } // Указываем ID связанной сущности
@@ -48,7 +48,7 @@ export class OffersService {
             // relations: ['parent'] 
         });
 
-        return { data: offers };
+        return offers;
     }
 
     async findOne(id: string): Promise<Offer> {
