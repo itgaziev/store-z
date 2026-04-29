@@ -1,5 +1,6 @@
+import { Barcode } from "@/barcodes/entities/barcode.entity";
 import { Product } from "@/products/entities/product.entity";
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('offers')
 export class Offer {
@@ -18,6 +19,9 @@ export class Offer {
     @ManyToOne(() => Product, { eager: true })
     @JoinColumn({ name: 'parent_id' })
     parent: Product
+    
+    @OneToMany(() => Barcode, (barcode) => barcode.offer, { cascade: true })
+    barcodes: Barcode[];
 
     @Column({ default: true })
     isActive: boolean;

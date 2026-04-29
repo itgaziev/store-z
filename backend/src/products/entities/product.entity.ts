@@ -1,3 +1,4 @@
+import { Barcode } from "@/barcodes/entities/barcode.entity";
 import { ProductImage } from "@/images/entities/product-image.entity";
 import { Offer } from "@/offers/entities/offer.entity";
 import { Section } from "@/sections/entities/section.entity";
@@ -35,6 +36,9 @@ export class Product {
 
     @OneToMany(() => ProductImage, (image) => image.product, { cascade: true })
     images: ProductImage[];
+
+    @OneToMany(() => Barcode, (barcode) => barcode.product, { cascade: true })
+    barcodes: Barcode[];
 
     @CreateDateColumn({ name: 'created_at'})
     createdAt: Date;
