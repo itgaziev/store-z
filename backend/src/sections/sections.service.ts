@@ -35,7 +35,7 @@ export class SectionsService {
         return this.sectionsRepository.findTrees()
     }
 
-    async findOne(id: number): Promise<Section> {
+    async findOne(id: string): Promise<Section> {
         const section = await this.sectionsRepository.findOne({
             where: { id },
             withDeleted: true,
@@ -48,7 +48,7 @@ export class SectionsService {
         return section;
     }
 
-    async update(id: number, updateSectionDto: UpdateSectionDto): Promise<Section> {
+    async update(id: string, updateSectionDto: UpdateSectionDto): Promise<Section> {
         const section = await this.findOne(id);
 
         if (updateSectionDto.parentId) {
@@ -73,11 +73,11 @@ export class SectionsService {
         return this.sectionsRepository.save(section);
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: string): Promise<void> {
         await this.sectionsRepository.softDelete(id);
     }
 
-    async restore(id: number): Promise<void> {
+    async restore(id: string): Promise<void> {
         await this.sectionsRepository.restore(id);
     }
 }

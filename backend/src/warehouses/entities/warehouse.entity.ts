@@ -2,8 +2,11 @@ import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedCol
 
 @Entity('warehouses')
 export class Warehouse {
-    @PrimaryGeneratedColumn('increment')
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
+
+    @Column({ type: 'bigint', unique: true, default: () => "nextval('warehouse_number_seq')" })
+    number: number;
 
     @Column()
     name: string;

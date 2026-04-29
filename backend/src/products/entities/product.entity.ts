@@ -1,14 +1,15 @@
 import { ProductImage } from "@/images/entities/product-image.entity";
+import { Offer } from "@/offers/entities/offer.entity";
 import { Section } from "@/sections/entities/section.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('products')
 export class Product {
-    @PrimaryGeneratedColumn('increment')
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
-    @Column({ nullable: true})
-    uuid: string;
+    @Column({ type: 'bigint', unique: true, default: () => "nextval('product_number_seq')" })
+    number: number;
 
     @Column()
     name: string;
@@ -28,6 +29,9 @@ export class Product {
     @ManyToOne(() => Section, (section) => section.products)
     @JoinColumn({ name: 'section_id' })
     section: Section; 
+
+    @OneToMany(() => Offer, (offer) => offer.parent, { cascade: true })
+    offers: Offer[];
 
     @OneToMany(() => ProductImage, (image) => image.product, { cascade: true })
     images: ProductImage[];

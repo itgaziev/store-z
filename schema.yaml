@@ -1,0 +1,72 @@
+Product
+    - id : string
+    - code : string - uniq
+    - article: string
+    - externalCode : string
+    - name : string
+    - full_name: text
+    - description: text
+    - isActive: boolean
+    - isDeleted: boolean
+
+Offer
+  - id : string
+  - name: string
+  - parent: Product
+  - isActive: boolean
+  - isDeleted: boolean
+
+Section
+  - id : string
+  - code : string - uniq
+  - name : string
+  - parent: Section | NULL
+
+Warehouse
+  - id : string
+  - code: string - uniq
+  - name : string
+  - isActive : boolean
+
+PriceType
+  - id : string
+  - code : string - uniq
+  - name : string
+  - isActive: boolean
+  - isDeleted: boolean
+
+Currencies
+  - id : string
+  - code : string - uniq
+  - name : string
+  - rate : decimal|float 1.000
+
+BarcodeType
+  - id : string
+  - name : string
+
+Barcode
+  - barcode : string - uniq
+  - product : Product
+  - offer : Offer|null
+  - type : BarcodeType
+  - isActive: boolean
+  - isDeleted: boolean
+
+PermisionEnum (Admin, Product, ProductRead, Warehouse, WarehouseRead ...)
+Role
+  - id : string
+  - name : string
+  - description: string
+  - permission: PermissionEnum[]
+
+User
+ - id : string
+ - login : string
+ - password: string
+ - email : string
+ - surName: string
+ - firstName : string
+ - patronymic : string
+ - role: Role
+ - isActive: boolean

@@ -39,6 +39,11 @@ export class ProductsService {
             ...createProductDto,
             section,
         });
+        if (!createProductDto.sku) {
+            const savedProduct = await this.productsRepository.save(product);
+            savedProduct.sku = savedProduct.number.toString();
+            return this.productsRepository.save(savedProduct);
+        }
 
         return this.productsRepository.save(product);
     }
@@ -72,7 +77,7 @@ export class ProductsService {
         return { data, total, page: paginationDto.page!, limit: paginationDto.limit! };
     }
 
-    async findOne(id: number): Promise<Product> {
+    async findOne(id: string): Promise<Product> {
         const product = await this.productsRepository.findOne({
             where: { id },
             relations: ['section'],
@@ -86,7 +91,7 @@ export class ProductsService {
         return product;
     }
 
-    async update(id: number, updateProductDto: UpdateProductDto): Promise<Product> {
+    async update(id: string, updateProductDto: UpdateProductDto): Promise<Product> {
         const product = await this.findOne(id);
 
         if (updateProductDto.sku && updateProductDto.sku !== product.sku) {
@@ -97,10 +102,6 @@ export class ProductsService {
 
             if (existingProduct && existingProduct.id !== id) {
                 throw new ConflictException('Product with this sku already exists');
-            }
-
-            if (existingProduct && existingProduct.id !== id) {
-                throw new ConflictException('Product with this SKU already exists');
             }
         }
 
@@ -122,11 +123,11 @@ export class ProductsService {
         return this.productsRepository.save(product);
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: string): Promise<void> {
         await this.productsRepository.softDelete(id);
     }
 
-    async restore(id: number): Promise<void> {
+    async restore(id: string): Promise<void> {
         await this.productsRepository.restore(id);
     }
 }

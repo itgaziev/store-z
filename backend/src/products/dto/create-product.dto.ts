@@ -23,9 +23,9 @@ export class CreateProductDto {
     xmlCode?: string;
 
     @ApiProperty({ example: 'category-uuid', description: 'Category ID'})
-    @IsNumber()
+    @IsUUID()
     @IsOptional()
-    sectionId?: number;
+    sectionId?: string;
 
     @ApiProperty({ default: true })
     @IsBoolean()

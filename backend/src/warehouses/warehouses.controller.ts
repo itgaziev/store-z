@@ -1,22 +1,24 @@
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
-import { RolesGuard } from '@/common/guards/roles.guard';
+import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { WarehousesService } from './warehouses.service';
-import { Roles } from '@/common/decorators/roles.decorator';
+import { Permissions } from '@/common/decorators/permissions.decorator';
 import { CreateWarehouseDto } from './dto/create-warehouse.dto';
 import { PaginationDto } from '@/common/dto/pagination.dto';
 import { UpdateWarehouseDto } from './dto/update-warehouse.dto';
+import { ModelNameEnum } from '@/common/enums/model-name.enum';
+import { AccessEnum } from '@/common/enums/access.enum';
 
 @ApiTags('Warehouses')
 @Controller('warehouses')
-@UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, PermissionsGuard)
 @ApiBearerAuth()
 export class WarehousesController {
     constructor(private readonly warehousesService: WarehousesService) {}
 
     @Post()
-    @Roles('ADMIN', 'MANAGER')
+    @Permissions({ model: ModelNameEnum.WAREHOUSE, access: AccessEnum.WRITE })
     @ApiOperation({ summary: 'Create a new warehouse' })
     @ApiResponse({ status: 201, description: 'Warehouse created succesfully' })
     create(@Body() createWarehouseDto: CreateWarehouseDto) {
@@ -24,7 +26,7 @@ export class WarehousesController {
     }
 
     @Get()
-    @Roles('ADMIN', 'MANAGER', 'USER')
+    @Permissions({ model: ModelNameEnum.WAREHOUSE, access: AccessEnum.READ })
     @ApiOperation({ summary: 'Get all warehouses'})
     @ApiResponse({ status: 200, description: 'Return all warehouses'})
     findAll(@Query() paginationDto: PaginationDto) {
@@ -32,7 +34,7 @@ export class WarehousesController {
     }
 
     @Get(':id')
-    @Roles('ADMIN', 'MANAGER', 'USER')
+    @Permissions({ model: ModelNameEnum.WAREHOUSE, access: AccessEnum.READ })
     @ApiOperation({ summary: 'Get warehouses by ID'})
     @ApiResponse({ status: 200, description: 'Return warehouses by ID'})
     findOne(@Param('id') id: number) {
@@ -40,7 +42,7 @@ export class WarehousesController {
     }    
 
     @Patch(':id')
-    @Roles('ADMIN', 'MANAGER')
+    @Permissions({ model: ModelNameEnum.WAREHOUSE, access: AccessEnum.WRITE })
     @ApiOperation({ summary: 'Update warehouse'})
     @ApiResponse({ status: 200, description: 'Warehouse updated successfully'})
     update(@Param('id') id: number, @Body() updateWarehouseDto: UpdateWarehouseDto) {
@@ -48,7 +50,7 @@ export class WarehousesController {
     }
 
     @Delete(':id')
-    @Roles('ADMIN', 'MANAGER')
+    @Permissions({ model: ModelNameEnum.WAREHOUSE, access: AccessEnum.DELETE })
     @ApiOperation({ summary: 'Delete warehouse (soft delete)'})
     @ApiResponse({ status: 200, description: 'Warehouse deleted successfully'})
     remove(@Param('id') id: number) {

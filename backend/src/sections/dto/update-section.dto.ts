@@ -13,7 +13,7 @@ export class UpdateSectionDto {
     description?: string
 
     @ApiProperty({ required: false, description: 'Parent section ID for nested sections'})
-    @IsNumber()
+    @IsUUID()
     @IsOptional()
-    parentId?: number;
+    parentId?: string;
 }

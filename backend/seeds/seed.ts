@@ -27,6 +27,29 @@ export default async function runSeed(dataSource: DataSource) {
         roles[roleData.name] = role;
     }
 
+    console.log('📋 Seeding Role Permissions...');
+    const permissionRepository = dataSource.getRepository('role_permissions');
+    for (const permData of data.rolePermissions) {
+        const role = roles[permData.role];
+        if (!role) continue;
+
+        const existingPerm = await permissionRepository.findOne({
+            where: { roleId: role.id, modelName: permData.model, access: permData.access }
+        });
+
+        if (!existingPerm) {
+            const permission = permissionRepository.create({
+                roleId: role.id,
+                modelName: permData.model,
+                access: permData.access
+            });
+            await permissionRepository.save(permission);
+            console.log(`   ✅ ${permData.role} -> ${permData.model}:${permData.access}`);
+        } else {
+            console.log(`   ⏭️  ${permData.role} -> ${permData.model}:${permData.access} exists`);
+        }
+    }
+
     console.log('Seeding Users ...');
     const users: Record<string, any> = {}
     for (const userData of data.users) {

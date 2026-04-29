@@ -8,6 +8,8 @@ import { ProductsModule } from './products/products.module';
 import { ImagesModule } from './images/images.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { databaseConfig } from './config/database.config';
+import { OffersModule } from './offers/offers.module';
+import { CurrenciesModule } from './currencies/currencies.module';
 
 @Module({
     imports: [
@@ -23,7 +25,9 @@ import { databaseConfig } from './config/database.config';
         SectionsModule,
         ProductsModule,
         WarehousesModule,
-        ImagesModule
+        ImagesModule,
+        OffersModule,
+        CurrenciesModule
     ],
 })
 export class AppModule { }

@@ -57,7 +57,7 @@ export class UsersService {
         return { data, total, page, limit }
     }
 
-    async findOne(id: number): Promise<User> {
+    async findOne(id: string): Promise<User> {
         const user = await this.usersRepository.findOne({
             where: { id },
             relations: ['role'],
@@ -79,7 +79,7 @@ export class UsersService {
         });
     }
 
-    async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    async update(id: string, updateUserDto: UpdateUserDto): Promise<User> {
         const user = await this.findOne(id);
 
         if (updateUserDto.password) {
@@ -102,12 +102,12 @@ export class UsersService {
         return this.usersRepository.save(user)
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: string): Promise<void> {
         const user = await this.findOne(id);
         await this.usersRepository.softDelete(id);
     }
 
-    async restore(id: number): Promise<void> {
+    async restore(id: string): Promise<void> {
         await this.usersRepository.restore(id);
     }
 }

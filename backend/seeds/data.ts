@@ -14,6 +14,14 @@ export const seedData = {
         { name: "MANAGER", description: "Warehouse or department manager" },
         { name: "USER", description: "End user of the system" },
     ],
+    rolePermissions: [
+        { role: "MANAGER", model: "PRODUCT", access: "WRITE" },
+        { role: "MANAGER", model: "WAREHOUSE", access: "WRITE" },
+        { role: "MANAGER", model: "SECTION", access: "WRITE" },
+        { role: "MANAGER", model: "IMAGE", access: "WRITE" },
+        { role: "MANAGER", model: "USER", access: "READ" },
+        { role: "USER", model: "WAREHOUSE", access: "READ" },
+    ],
     products: [
         { name: "Laptop Pro", description: "High-performance laptop", sectionId: "SECT-001", sku: "DEMO-001" },
         { name: "The Great Novel", description: "A captivating story", sectionId: "SECT-002", sku: "DEMO-002" },

@@ -4,11 +4,11 @@ import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryG
 @Entity('sections')
 @Tree('closure-table')
 export class Section {
-    @PrimaryGeneratedColumn('increment')
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
-    @Column({ nullable: true })
-    uuid: string;
+    @Column({ type: 'bigint', unique: true, default: () => "nextval('section_number_seq')" })
+    number: number;
     
     @Column({ nullable: true })
     code: string;
