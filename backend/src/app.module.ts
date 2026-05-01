@@ -11,6 +11,7 @@ import { databaseConfig } from './config/database.config';
 import { OffersModule } from './offers/offers.module';
 import { CurrenciesModule } from './currencies/currencies.module';
 import { BarcodesModule } from './barcodes/barcodes.module';
+import { UnitsModule } from './units/units.module';
 
 @Module({
     imports: [
@@ -29,7 +30,8 @@ import { BarcodesModule } from './barcodes/barcodes.module';
         ImagesModule,
         OffersModule,
         CurrenciesModule,
-        BarcodesModule
+        BarcodesModule,
+        UnitsModule
     ],
 })
 export class AppModule { }

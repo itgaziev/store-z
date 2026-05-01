@@ -1,7 +1,8 @@
 import { Offer } from "@/offers/entities/offer.entity";
 import { Product } from "@/products/entities/product.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { BarcodeTypeEnum } from "../barcodes.type";
+import { BarcodeTypeEnum } from "../../common/enums/barcodes.enum";
+import { Unit } from "@/units/entities/unit.entity";
 
 @Entity('barcodes')
 export class Barcode {
@@ -34,6 +35,13 @@ export class Barcode {
 
     @Column({ nullable: true })
     offerId: string;
+
+    @ManyToOne(() => Unit, (unit) => unit.code)
+    @JoinColumn({ name: 'unitId'})
+    unit: Unit;
+
+    @Column()
+    unitId: string;
 
     @CreateDateColumn({ name: 'created_at'})
     createdAt: Date;
