@@ -43,6 +43,19 @@ export class Barcode {
     @Column()
     unitId: string;
 
+    @Column({
+        type: 'decimal',
+        precision: 10,
+        scale: 3,
+        transformer: {
+            to: (value: number) => value,
+            from: (value: string) => parseFloat(value)
+        },
+        default: 1.000
+    })
+    rate: number;
+
+
     @CreateDateColumn({ name: 'created_at'})
     createdAt: Date;
 

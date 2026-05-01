@@ -1,12 +1,12 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Type } from "class-transformer";
-import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsUUID, Min } from "class-validator";
+import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsString, IsUUID, Min } from "class-validator";
 
 export class UploadImageDto {
     @ApiProperty({ example: 'product-uuid', description: 'Product UUID' })
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
-    productId: number;
+    productId: string;
 
     @ApiProperty({ default: false, required: false })
     @IsOptional()

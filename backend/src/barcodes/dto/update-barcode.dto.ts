@@ -1,4 +1,4 @@
-import { IsBoolean, IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
+import { IsBoolean, IsEnum, IsNumber, IsOptional, IsString, IsUUID } from "class-validator";
 import { BarcodeTypeEnum } from "../../common/enums/barcodes.enum";
 import { ApiProperty } from "@nestjs/swagger";
 
@@ -32,4 +32,9 @@ export class UpdateBarcodeDto {
     @IsBoolean()
     @IsOptional()
     isActive?: boolean;
+
+    @ApiProperty({ default: 1.000})
+    @IsNumber()
+    @IsOptional()
+    rate?: number;
 }

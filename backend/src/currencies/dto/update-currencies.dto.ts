@@ -12,6 +12,11 @@ export class UpdateCurrenciesDto {
     @IsOptional()
     code?: string;
 
+    @ApiProperty({ default: false })
+    @IsBoolean()
+    @IsOptional()
+    isBase?: boolean;
+
     @ApiProperty({ example: 'Russian Ruble' })
     @IsString()
     @IsOptional()

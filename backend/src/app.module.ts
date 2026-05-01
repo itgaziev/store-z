@@ -12,6 +12,7 @@ import { OffersModule } from './offers/offers.module';
 import { CurrenciesModule } from './currencies/currencies.module';
 import { BarcodesModule } from './barcodes/barcodes.module';
 import { UnitsModule } from './units/units.module';
+import { PriceCategoriesModule } from './price-categories/price-categories.module';
 
 @Module({
     imports: [
@@ -31,7 +32,8 @@ import { UnitsModule } from './units/units.module';
         OffersModule,
         CurrenciesModule,
         BarcodesModule,
-        UnitsModule
+        UnitsModule,
+        PriceCategoriesModule
     ],
 })
 export class AppModule { }

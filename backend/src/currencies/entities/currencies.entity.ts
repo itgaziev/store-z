@@ -11,6 +11,9 @@ export class Currencies {
     @Column()
     code: string;
 
+    @Column({ default : false })
+    isBase: boolean;
+
     @Column()
     fullName: string;
 
