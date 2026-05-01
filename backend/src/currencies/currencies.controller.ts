@@ -3,13 +3,16 @@ import { CurrenciesService } from './currencies.service';
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { Permissions } from '@/common/decorators/permissions.decorator';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ModelNameEnum } from '@/common/enums/model-name.enum';
 import { AccessEnum } from '@/common/enums/access.enum';
 import { CreateCurrenciesDto } from './dto/create-currencies.dto';
 import { UpdateCurrenciesDto } from './dto/update-currencies.dto';
 
+@ApiTags('Currencies')
 @Controller('currencies')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+@ApiBearerAuth()
 export class CurrenciesController {
     constructor(private readonly currenciesService: CurrenciesService) { }
 

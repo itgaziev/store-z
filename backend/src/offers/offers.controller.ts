@@ -11,6 +11,8 @@ import { UpdateOfferDto } from './dto/update-offer.dto';
 
 @ApiTags('Offers')
 @Controller('offers')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+@ApiBearerAuth()
 export class OffersController {
     constructor(private readonly offersService: OffersService) { }
 

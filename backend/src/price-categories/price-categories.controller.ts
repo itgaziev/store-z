@@ -2,13 +2,16 @@ import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards } from '@n
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { Permissions } from '@/common/decorators/permissions.decorator';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ModelNameEnum } from '@/common/enums/model-name.enum';
 import { AccessEnum } from '@/common/enums/access.enum';
 import { PriceCategoriesService } from './price-categories.service';
 import { CreatePriceCategoryDto } from './dto/create-price-category.dto';
 import { UpdatePriceCategoryDto } from './dto/update-price-category.dto';
 
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+@ApiBearerAuth()
+@ApiTags('PriceCategories')
 @Controller('pricecategories')
 export class PriceCategoriesController {
     constructor(private readonly priceCategoriesService: PriceCategoriesService) { }

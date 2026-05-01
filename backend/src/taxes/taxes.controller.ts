@@ -9,7 +9,10 @@ import { TaxesService } from './taxes.service';
 import { CreateTaxDto } from './dto/create-taxes.dto';
 import { UpdateTaxDto } from './dto/update-taxes.dto';
 
+@ApiTags('Taxes')
 @Controller('taxes')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+@ApiBearerAuth()
 export class TaxesController {
     constructor(private readonly taxesService: TaxesService) { }
 

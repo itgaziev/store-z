@@ -42,8 +42,12 @@ async function bootstrap() {
         .addTag('Users', 'User management')
         .addTag('Sections', 'Section management (tree structure)')
         .addTag('Products', 'Product management')
+        .addTag('Offers', 'Offers management')
         .addTag('Warehouses', 'Warehouse management')
         .addTag('Images', 'Product image management')
+        .addTag('Units', 'Units management')
+        .addTag('Currencies', 'Currencies management')
+        .addTag('Taxes', 'Taxes management')
         .build()
 
 

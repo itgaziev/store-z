@@ -11,6 +11,8 @@ import { UpdateBarcodeDto } from './dto/update-barcode.dto';
 
 @ApiTags('Barcodes')
 @Controller('barcodes')
+@UseGuards(JwtAuthGuard, PermissionsGuard)
+@ApiBearerAuth()
 export class BarcodesController {
     constructor(private readonly barcodesService: BarcodesService) { }
 
