@@ -37,7 +37,7 @@ export class WarehousesController {
     @Permissions({ model: ModelNameEnum.WAREHOUSE, access: AccessEnum.READ })
     @ApiOperation({ summary: 'Get warehouses by ID'})
     @ApiResponse({ status: 200, description: 'Return warehouses by ID'})
-    findOne(@Param('id') id: number) {
+    findOne(@Param('id') id: string) {
         return this.warehousesService.findOne(id);
     }    
 
@@ -45,7 +45,7 @@ export class WarehousesController {
     @Permissions({ model: ModelNameEnum.WAREHOUSE, access: AccessEnum.WRITE })
     @ApiOperation({ summary: 'Update warehouse'})
     @ApiResponse({ status: 200, description: 'Warehouse updated successfully'})
-    update(@Param('id') id: number, @Body() updateWarehouseDto: UpdateWarehouseDto) {
+    update(@Param('id') id: string, @Body() updateWarehouseDto: UpdateWarehouseDto) {
         return this.warehousesService.update(id, updateWarehouseDto);
     }
 
@@ -53,7 +53,7 @@ export class WarehousesController {
     @Permissions({ model: ModelNameEnum.WAREHOUSE, access: AccessEnum.DELETE })
     @ApiOperation({ summary: 'Delete warehouse (soft delete)'})
     @ApiResponse({ status: 200, description: 'Warehouse deleted successfully'})
-    remove(@Param('id') id: number) {
+    remove(@Param('id') id: string) {
         return this.warehousesService.remove(id);
     }
 }

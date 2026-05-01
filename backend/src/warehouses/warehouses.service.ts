@@ -38,7 +38,7 @@ export class WarehousesService {
         return { data, total, page: paginationDto.page!, limit: paginationDto.limit! }
     }
 
-    async findOne(id: number): Promise<Warehouse> {
+    async findOne(id: string): Promise<Warehouse> {
         const warehouse = await this.warehousesRepository.findOne({
             where: { id },
             withDeleted: true,
@@ -51,7 +51,7 @@ export class WarehousesService {
         return warehouse;
     }
 
-    async update(id: number, updateWarehouseDto: UpdateWarehouseDto): Promise<Warehouse> {
+    async update(id: string, updateWarehouseDto: UpdateWarehouseDto): Promise<Warehouse> {
         const warehouse = await this.findOne(id);
 
         if (updateWarehouseDto.code && updateWarehouseDto.code !== warehouse.code) {
@@ -69,12 +69,12 @@ export class WarehousesService {
         return this.warehousesRepository.save(warehouse);
     }
 
-    async remove(id: number): Promise<void> {
+    async remove(id: string): Promise<void> {
         const warehouse = await this.findOne(id);
         await this.warehousesRepository.softDelete(id);
     }
 
-    async restore(id: number): Promise<void> {
+    async restore(id: string): Promise<void> {
         await this.warehousesRepository.restore(id);
     }
 }

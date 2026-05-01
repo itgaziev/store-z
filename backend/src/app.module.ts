@@ -13,6 +13,7 @@ import { CurrenciesModule } from './currencies/currencies.module';
 import { BarcodesModule } from './barcodes/barcodes.module';
 import { UnitsModule } from './units/units.module';
 import { PriceCategoriesModule } from './price-categories/price-categories.module';
+import { TaxesModule } from './taxes/taxes.module';
 
 @Module({
     imports: [
@@ -33,7 +34,8 @@ import { PriceCategoriesModule } from './price-categories/price-categories.modul
         CurrenciesModule,
         BarcodesModule,
         UnitsModule,
-        PriceCategoriesModule
+        PriceCategoriesModule,
+        TaxesModule
     ],
 })
 export class AppModule { }
