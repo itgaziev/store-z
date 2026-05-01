@@ -31,4 +31,9 @@ export class UpdateProductDto {
     @IsBoolean()
     @IsOptional()
     isActive?: boolean;
+
+    @ApiProperty({ description: 'unit id' })
+    @IsUUID()
+    @IsOptional()
+    unitId?: string;
 }

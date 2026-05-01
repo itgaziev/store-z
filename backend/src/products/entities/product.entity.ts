@@ -2,6 +2,7 @@ import { Barcode } from "@/barcodes/entities/barcode.entity";
 import { ProductImage } from "@/images/entities/product-image.entity";
 import { Offer } from "@/offers/entities/offer.entity";
 import { Section } from "@/sections/entities/section.entity";
+import { Unit } from "@/units/entities/unit.entity";
 import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('products')
@@ -39,6 +40,13 @@ export class Product {
 
     @OneToMany(() => Barcode, (barcode) => barcode.product, { cascade: true })
     barcodes: Barcode[];
+
+    @ManyToOne(() => Unit, (unit) => unit.code)
+    @JoinColumn({ name: 'unitId'})
+    unit: Unit;
+
+    @Column()
+    unitId: string;
 
     @CreateDateColumn({ name: 'created_at'})
     createdAt: Date;
