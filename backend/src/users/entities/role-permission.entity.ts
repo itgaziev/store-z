@@ -5,11 +5,11 @@ import { AccessEnum } from "@/common/enums/access.enum";
 
 @Entity('role_permissions')
 export class RolePermission {
-    @PrimaryGeneratedColumn('increment')
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column({ name: 'role_id' })
-    roleId: number;
+    roleId: string;
 
     @ManyToOne(() => Role, { onDelete: 'CASCADE' })
     @JoinColumn({ name: 'role_id' })
