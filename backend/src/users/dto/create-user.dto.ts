@@ -18,6 +18,10 @@ export class CreateUserDto {
     @IsNotEmpty()
     lastName: string;
 
+    @IsString()
+    @IsOptional()
+    patronymic?: string;
+
     @IsUUID()
     @IsOptional()
     roleId?: string

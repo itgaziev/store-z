@@ -2,7 +2,52 @@ import { DataSource } from 'typeorm'; // Assuming TypeORM
 import { seedData } from './data';
 import * as bcrypt from 'bcrypt';
 
-export default async function runSeed(dataSource: DataSource) {
+export async function install(dataSource: DataSource) {
+    const roleRepository = dataSource.getRepository('roles');
+    const permissionRepository = dataSource.getRepository('role_permissions')
+
+    // Admin
+    let roleAdmin = await roleRepository.findOne({ where: { code: 'ADMIN' } })
+    if (!roleAdmin) {
+        roleAdmin = await roleRepository.create({ name: 'Администратор', code: 'ADMIN' });
+        await roleRepository.save(roleAdmin);
+        console.log(`✅ Role Администратор created`);
+    }
+
+    let roleUser = await roleRepository.findOne({ where: { code: 'USER' } })
+    if (!roleUser) {
+        roleUser = await roleRepository.create({ name: 'Пользователь', code: 'USER' });
+        await roleRepository.save(roleUser);
+        console.log(`✅ Role Пользователь created`);
+    }
+
+    let permissionAdmin = await permissionRepository.findOne({ where: { roleId : roleAdmin.id }})
+    if (!permissionAdmin) {
+        permissionAdmin = await permissionRepository.create({ roleId: roleAdmin.id, modelName: 'ADMIN', access: '3' });
+        await permissionRepository.save(permissionAdmin);
+        console.log(`✅ Permission Admin add to role Администратор`);
+    }
+
+
+    const userRepository = dataSource.getRepository('users');
+    let adminUser = await userRepository.findOne({ where: { email: 'admin@storez.ru' } });
+    if (!adminUser) {
+        const hashedPassword = await bcrypt.hash('!Admin123', 10);
+        const adminNew: any = {
+            firstName: 'Admin',
+            lastName: 'User',
+            email: 'admin@storez.ru',
+            password: hashedPassword,
+            role: roleAdmin
+        }
+        adminUser = userRepository.create(adminNew);
+        await userRepository.save(adminUser);
+        console.log(`✅ Admin user created with email admin@storez.ru and password !Admin123`);
+    }
+
+}
+
+export async function runSeed(dataSource: DataSource) {
     console.log('🌱 Starting seed...');
 
     let data = seedData;
@@ -55,7 +100,7 @@ export default async function runSeed(dataSource: DataSource) {
     for (const userData of data.users) {
         let user = await userRepository.findOne({ where: { email: userData.email } });
         if (!user) {
-            const role = await roleRepository.findOne({ where: { name: userData.role ?? 'USER' }});
+            const role = await roleRepository.findOne({ where: { name: userData.role ?? 'USER' } });
             const hashedPassword = await bcrypt.hash(userData.password, 10);
             const userNew: any = {
                 firstName: userData.firstName,

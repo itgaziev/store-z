@@ -7,6 +7,9 @@ export class Role {
     id: string;
 
     @Column({ unique: true })
+    code: string;
+
+    @Column()
     name: string;
 
     @OneToMany(() => RolePermission, (permission) => permission.role, { cascade: true, eager: true })

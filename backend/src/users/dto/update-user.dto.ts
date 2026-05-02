@@ -18,6 +18,10 @@ export class UpdateUserDto {
     @IsOptional()
     lastName?: string;
 
+    @IsString()
+    @IsOptional()
+    patronymic?: string;
+
     @IsUUID()
     @IsOptional()
     roleId?: string;

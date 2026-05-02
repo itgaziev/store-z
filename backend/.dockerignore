@@ -19,3 +19,4 @@ coverage
 .nyc_output
 uploads/*
 !.uploads/.gitkeep
+*.tsbuildinfo

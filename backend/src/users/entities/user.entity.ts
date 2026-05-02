@@ -18,6 +18,9 @@ export class User {
     @Column({ name: 'last_name' })
     lastName: string;
 
+    @Column({ name: 'patronymic', nullable: true })
+    patronymic: string;
+
     @Column({ default: true })
     isActive: boolean;
 

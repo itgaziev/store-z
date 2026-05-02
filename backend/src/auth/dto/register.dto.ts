@@ -1,6 +1,6 @@
 import { User } from "@/users/entities/user.entity";
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
+import { IsEmail, IsNotEmpty, IsOptional, IsString, MinLength } from "class-validator";
 
 export class RegisterDto {
     @ApiProperty({ example: 'john@doe.ru'})
@@ -23,6 +23,11 @@ export class RegisterDto {
     @IsString()
     @IsNotEmpty()
     lastName: string;
+
+    @ApiProperty({ example: 'Ivanovich' })
+    @IsString()
+    @IsOptional()
+    patronymic?: string;
 }
 
 export class RegisterResponseDto {
@@ -30,6 +35,6 @@ export class RegisterResponseDto {
     access_token: string;
     @ApiProperty({ example: '3600s' })
     expires_in: string;
-    @ApiProperty({ example: { id: 1, email: 'john@doe.ru', firstName: 'John', lastName: 'Doe', role: { id: 1, name: 'user', createdAt: new Date(), updatedAt: new Date() } } })
+    @ApiProperty({ example: { id: 1, email: 'john@doe.ru', firstName: 'John', lastName: 'Doe', patronymic: 'Ivanovich', role: { id: 1, name: 'user', createdAt: new Date(), updatedAt: new Date() } } })
     user: User;
 }

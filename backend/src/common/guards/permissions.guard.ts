@@ -23,7 +23,7 @@ export class PermissionsGuard implements CanActivate {
 
         const request = context.switchToHttp().getRequest();
         const user = request.user;
-
+        
         if (!user) {
             return false;
         }
@@ -31,12 +31,11 @@ export class PermissionsGuard implements CanActivate {
         if (!user.role) {
             return false;
         }
-
-        if (user.role.name === 'ADMIN') {
-            return true;
-        }
-
+        
         const rolePermissions = user.role.permissions || [];
+
+        const adminPermission = rolePermissions.find(p => p.modelName === 'ADMIN');
+        if (adminPermission) return true;
 
         return requiredPermissions.some(({ model, access }) => {
             const requiredAccessIdx = Number(AccessEnum[access]);

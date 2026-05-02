@@ -1,4 +1,5 @@
 export enum ModelNameEnum {
+    ADMIN = 'ADMIN',
     PRODUCT = 'PRODUCT',
     WAREHOUSE = 'WAREHOUSE',
     SECTION = 'SECTION',
