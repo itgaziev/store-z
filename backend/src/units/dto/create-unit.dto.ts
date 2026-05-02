@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateUnitDto {
     @ApiProperty({ example: '796'})
@@ -13,5 +13,7 @@ export class CreateUnitDto {
     name: string;
 
     @ApiProperty({ example: 'Штука'})
-    fullName: string;
+    @IsString()
+    @IsOptional()
+    fullName?: string;
 }

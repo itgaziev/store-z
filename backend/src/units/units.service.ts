@@ -15,7 +15,7 @@ export class UnitsService {
     async create(createUnitDto: CreateUnitDto): Promise<Unit> {
         const existingUnit = await this.unitRepository.findOne({
             where: { code: createUnitDto.code },
-            withDeleted: true
+            withDeleted: false
         });
 
         if (existingUnit) throw new ConflictException('Unit with this code already exists');
