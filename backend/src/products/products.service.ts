@@ -54,6 +54,7 @@ export class ProductsService {
             .createQueryBuilder('product')
             .leftJoinAndSelect('product.section', 'section')
             // .leftJoinAndSelect('product.images', 'images')
+            .leftJoinAndSelect('product.unit', 'unit')
             .where('product.deletedAt IS NULL');
 
         if (sectionId) {
@@ -124,7 +125,8 @@ export class ProductsService {
     }
 
     async remove(id: string): Promise<void> {
-        await this.productsRepository.softDelete(id);
+        const product = await this.findOne(id);
+        await this.productsRepository.remove(product);
     }
 
     async restore(id: string): Promise<void> {

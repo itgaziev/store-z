@@ -16,6 +16,9 @@ export class Product {
     @Column()
     name: string;
 
+    @Column({ nullable: true })
+    fullName: string;
+
     @Column({ type: 'text', nullable: true})
     description: string;
 
@@ -41,12 +44,9 @@ export class Product {
     @OneToMany(() => Barcode, (barcode) => barcode.product, { cascade: true })
     barcodes: Barcode[];
 
-    @ManyToOne(() => Unit, (unit) => unit.code)
-    @JoinColumn({ name: 'unitId'})
+    @ManyToOne(() => Unit, (unit) => unit.products)
+    @JoinColumn({ name: 'unit_id'})
     unit: Unit;
-
-    @Column()
-    unitId: string;
 
     @CreateDateColumn({ name: 'created_at'})
     createdAt: Date;

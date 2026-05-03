@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Barcode } from "@/barcodes/entities/barcode.entity";
+import { Product } from "@/products/entities/product.entity";
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity('units')
 export class Unit {
@@ -14,6 +16,12 @@ export class Unit {
     @Column({ nullable: true })
     fullName: string;
 
+    @OneToMany(() => Product, (product) => product.unit)
+    products: Product[];
+
+    @OneToMany(() => Barcode, (barcode) => barcode.unit)
+    barcodes: Barcode[];
+    
     @CreateDateColumn({ name: 'created_at'})
     createdAt: Date;
 

@@ -16,9 +16,6 @@ export class PriceCategory {
     name: string;
 
     @ManyToOne(() => Currencies, (currencies) => currencies.id)
-    @JoinColumn({ name: 'currenciesId'})
+    @JoinColumn({ name: 'currencies_id'})
     currencies: Currencies;
-
-    @Column()
-    currenciesId: string;
 }

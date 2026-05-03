@@ -31,13 +31,18 @@ export class PriceCategoriesService {
 
         if (!currencies) throw new NotFoundException('Currencies not found');
 
-        const priceCategory = this.priceCategoryRepository.create(createPriceCategoryDto);
+        const priceCategory = this.priceCategoryRepository.create({
+            ...createPriceCategoryDto,
+            currencies: currencies
+        });
 
         return this.priceCategoryRepository.save(priceCategory);
     }
 
     async findAll(): Promise<PriceCategory[]> {
-        return this.priceCategoryRepository.find();
+        return this.priceCategoryRepository.find({
+            relations: ['currencies']
+        });
     }
 
     async findOne(id: string): Promise<PriceCategory> {
@@ -70,7 +75,8 @@ export class PriceCategoriesService {
     }
 
     async remove(id: string): Promise<void> {
-        await this.priceCategoryRepository.softDelete(id);
+        const priceCategory = await this.findOne(id);
+        await this.priceCategoryRepository.remove(priceCategory);
     }
 
     async restore(id: string): Promise<void> {

@@ -82,7 +82,8 @@ export class OffersService {
     }
 
     async remove(id: string): Promise<void> {
-        await this.offersRepository.softDelete(id);
+        const offer = await this.findOne(id);
+        await this.offersRepository.remove(offer);
     }
 
     async restore(id: string): Promise<void> {

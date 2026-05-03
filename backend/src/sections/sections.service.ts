@@ -74,7 +74,11 @@ export class SectionsService {
     }
 
     async remove(id: string): Promise<void> {
-        await this.sectionsRepository.softDelete(id);
+        // TODO: Move children to another section or set their parent to null before deleting
+        // TODO: Handle products that belong to this section (move them to another section or set their section to null)
+        const section = await this.findOne(id);
+        await this.sectionsRepository.remove(section);
+
     }
 
     async restore(id: string): Promise<void> {

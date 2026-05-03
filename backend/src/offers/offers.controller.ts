@@ -26,12 +26,12 @@ export class OffersController {
         return this.offersService.create(createOfferDto);
     }
 
-    @Get()
+    @Get('p/:parentId')
     @UseGuards(JwtAuthGuard, PermissionsGuard)
     @Permissions({ model: ModelNameEnum.OFFER, access: AccessEnum.READ })
     @ApiOperation({ summary: 'Get all offer current product' })
     @ApiResponse({ status: 200, description: 'Return all offer current product' })
-    findAll(@Query('parentId') parentId: string) {
+    findAll(@Param('parentId') parentId: string) {
         return this.offersService.findAll(parentId);
     }
 

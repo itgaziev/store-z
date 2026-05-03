@@ -7,6 +7,16 @@ export class UpdateProductDto {
     @IsOptional()
     name?: string;
 
+    @ApiProperty({ example: 'Product full name' })
+    @IsString()
+    @IsOptional()
+    fullName?: string;
+
+    @ApiProperty({ example: 'Product code', required: false })
+    @IsString()
+    @IsOptional()
+    code?: string;
+
     @ApiProperty({ example: 'Description product', required: false })
     @IsString()
     @IsOptional()

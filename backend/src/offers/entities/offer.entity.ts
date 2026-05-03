@@ -13,7 +13,7 @@ export class Offer {
     @Column({ type: 'bigint', unique: true, default: () => "nextval('offer_number_seq')" })
     number: number;
 
-    @Column()
+    @Column({ nullable: true })
     xmlCode: string;
 
     @ManyToOne(() => Product, { eager: true })

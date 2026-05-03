@@ -71,7 +71,7 @@ export class WarehousesService {
 
     async remove(id: string): Promise<void> {
         const warehouse = await this.findOne(id);
-        await this.warehousesRepository.softDelete(id);
+        await this.warehousesRepository.remove(warehouse);
     }
 
     async restore(id: string): Promise<void> {

@@ -58,6 +58,11 @@ export class BarcodesService {
         return this.barcodeRepository.save(barcode);
     }
 
+    async findAll(): Promise<Barcode[]> {
+        return this.barcodeRepository.find({
+            relations: ['unit']
+        });
+    }
     async findByProduct(productId: string): Promise<Barcode[]> {        
         return this.barcodeRepository.find({
             where: { productId : productId }
@@ -73,7 +78,8 @@ export class BarcodesService {
     async findOne(id: string): Promise<Barcode> {
         const barcode = await this.barcodeRepository.findOne({
             where: { id },
-            withDeleted: true
+            withDeleted: true,
+            relations: ['unit', 'product', 'offer']
         });
 
         if (!barcode) throw new NotFoundException('Barcode not found');

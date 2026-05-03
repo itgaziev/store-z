@@ -15,5 +15,5 @@ export class UpdateOfferDto {
     @ApiProperty({ example: 'ext_code_offer', description: 'External offer code' })
     @IsString()
     @IsOptional()
-    xmlCode: string;
+    xmlCode?: string;
 }

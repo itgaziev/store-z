@@ -12,6 +12,11 @@ export class UpdateSectionDto {
     @IsOptional()
     description?: string
 
+    @ApiProperty({ example: 'Category code', required: false})
+    @IsString()
+    @IsOptional()
+    code?: string
+
     @ApiProperty({ required: false, description: 'Parent section ID for nested sections'})
     @IsUUID()
     @IsOptional()

@@ -37,11 +37,8 @@ export class Barcode {
     offerId: string;
 
     @ManyToOne(() => Unit, (unit) => unit.code)
-    @JoinColumn({ name: 'unitId'})
+    @JoinColumn({ name: 'unit_id'})
     unit: Unit;
-
-    @Column()
-    unitId: string;
 
     @Column({
         type: 'decimal',

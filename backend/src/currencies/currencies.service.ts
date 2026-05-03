@@ -26,7 +26,7 @@ export class CurrenciesService {
     }
 
     async findAll(): Promise<Currencies[]> {
-        return this.currenciesRepository.find()
+        return this.currenciesRepository.find({ withDeleted: true });
     }
 
     async findOne(id: string): Promise<Currencies> {
@@ -60,6 +60,7 @@ export class CurrenciesService {
     }
 
     async remove(id: string): Promise<void> {
-        await this.currenciesRepository.softDelete(id);
+        const currencies = await this.findOne(id);
+        await this.currenciesRepository.remove(currencies);
     }
 }

@@ -39,7 +39,8 @@ export class TaxesService {
     }
 
     async remove(id: string): Promise<void> {
-        await this.taxesRepository.softDelete(id);
+        const taxes = await this.findOne(id);
+        await this.taxesRepository.remove(taxes);
     }
 
     async restore(id: string): Promise<void> {

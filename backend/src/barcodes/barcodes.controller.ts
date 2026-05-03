@@ -29,18 +29,27 @@ export class BarcodesController {
     @Get()
     @UseGuards(JwtAuthGuard, PermissionsGuard)
     @Permissions({ model: ModelNameEnum.OFFER, access: AccessEnum.READ })
+    @ApiOperation({ summary: 'Get all barcodes' })
+    @ApiResponse({ status: 200, description: 'Return all barcodes' })
+    findAll() {
+        return this.barcodesService.findAll();
+    }
+
+    @Get('product/:productId')
+    @UseGuards(JwtAuthGuard, PermissionsGuard)
+    @Permissions({ model: ModelNameEnum.OFFER, access: AccessEnum.READ })
     @ApiOperation({ summary: 'Get all barcode current product' })
     @ApiResponse({ status: 200, description: 'Return all barcode current product' })
-    findByProduct(@Query('productId') productId: string) {
+    findByProduct(@Param('productId') productId: string) {
         return this.barcodesService.findByProduct(productId);
     }
 
-    @Get()
+    @Get('offer/:offerId')
     @UseGuards(JwtAuthGuard, PermissionsGuard)
     @Permissions({ model: ModelNameEnum.OFFER, access: AccessEnum.READ })
     @ApiOperation({ summary: 'Get all barcode current offer' })
     @ApiResponse({ status: 200, description: 'Return all barcode current offer' })
-    findByOffer(@Query('offerId') offerId: string) {
+    findByOffer(@Param('offerId') offerId: string) {
         return this.barcodesService.findByOffer(offerId);
     }
 
