@@ -100,7 +100,7 @@ export class BarcodesService {
                 throw new ConflictException('Barcode with this name already exists');
             }
         }
-
+ 
         Object.assign(barcode, updateBarcodeDto);
         return this.barcodeRepository.save(barcode);
     }

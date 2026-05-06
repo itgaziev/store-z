@@ -106,7 +106,7 @@ export async function apiRequest<T>(
 
     const url = `${API_BASE_URL}${endpoint}${buildQueryString(query)}`;
     const response = await fetch(url, config);
-
+    console.log('API Request:', { url, method: config.method, headers: config.headers, body: config.body });
     if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new ApiError(

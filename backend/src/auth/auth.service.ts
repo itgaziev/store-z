@@ -32,7 +32,7 @@ export class AuthService {
             throw new UnauthorizedException('Invalid credentials');
         }
 
-        const { password: _, ...result} = user;
+        const { password: _, ...result } = user;
         return result;
     }
 
@@ -44,14 +44,11 @@ export class AuthService {
             sub: user.id,
             role: user.role
         };
-
-        const access_token = this.jwtService.sign(payload);
-        const refresh_token = this.refreshJwtService.sign(payload);
+        const { accessToken, refreshToken } = this.issueToken(payload);
 
         return {
-            access_token,
-            refresh_token,
-            expires_in: this.configService.get<string>('JWT_EXPIRES_IN'),
+            accessToken: accessToken,
+            refreshToken: refreshToken,
             user: {
                 id: user.id,
                 email: user.email,
@@ -82,14 +79,10 @@ export class AuthService {
             sub: user.id,
             role: user.role
         };
-
-        const access_token = this.jwtService.sign(payload);
-        const refresh_token = this.refreshJwtService.sign(payload);
-
+        const { accessToken, refreshToken } = this.issueToken(payload);
         return {
-            access_token,
-            refresh_token,
-            expires_in: this.configService.get<string>('JWT_EXPIRES_IN'),
+            accessToken: accessToken,
+            refreshToken: refreshToken,
             user: {
                 id: user.id,
                 email: user.email,
@@ -106,23 +99,20 @@ export class AuthService {
             sub: user.id,
             role: user.role,
         };
-
-        const access_token = this.jwtService.sign(payload);
-        const refresh_token = this.refreshJwtService.sign(payload);
+        const { accessToken, refreshToken } = this.issueToken(payload);
 
         return {
-            access_token,
-            refresh_token,
-            expires_in: this.configService.get<string>('JWT_EXPIRES_IN')
+            accessToken: accessToken,
+            refreshToken: refreshToken
         };
     }
 
-    async refreshFromToken(refreshToken: string) {
+    async refreshFromToken(token: string) {
         try {
-            const payload = this.refreshJwtService.verify(refreshToken);
-            
+            const payload = await this.refreshJwtService.verifyAsync(token);
+
             const user = await this.usersService.findOne(payload.sub);
-            
+
             if (!user || !user.isActive) {
                 throw new UnauthorizedException('Invalid refresh token');
             }
@@ -133,13 +123,11 @@ export class AuthService {
                 role: user.role,
             };
 
-            const access_token = this.jwtService.sign(newPayload);
-            const new_refresh_token = this.refreshJwtService.sign(newPayload);
+            const { accessToken, refreshToken } = this.issueToken(newPayload);
 
             return {
-                access_token,
-                refresh_token: new_refresh_token,
-                expires_in: this.configService.get<string>('JWT_EXPIRES_IN'),
+                accessToken: accessToken,
+                refreshToken: refreshToken,
                 user: {
                     id: user.id,
                     email: user.email,
@@ -151,5 +139,15 @@ export class AuthService {
         } catch (error) {
             throw new UnauthorizedException('Invalid or expired refresh token');
         }
+    }
+
+    private issueToken(payload: any): { accessToken: string; refreshToken: string} {
+        const expiresIn = this.configService.get<string>('JWT_EXPIRES_IN') as any;
+        const expiresInRefresh = this.configService.get<string>('JWT_REFRESH_EXPIRES_IN') as any;
+        const accessToken = this.jwtService.sign(payload, { expiresIn });
+        const refreshToken = this.refreshJwtService.sign(payload, { expiresIn: expiresInRefresh });
+
+        return { accessToken, refreshToken };
+
     }
 }

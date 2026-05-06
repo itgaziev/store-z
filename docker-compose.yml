@@ -30,6 +30,7 @@ services:
             - DB_NAME=store
             - JWT_SECRET=my-super-jwt-key-17124
             - JWT_EXPIRES_IN=24h
+            - JWT_REFRESH_EXPIRES_IN=7d
             - PORT=3000
             - NODE_ENV=development
         volumes:

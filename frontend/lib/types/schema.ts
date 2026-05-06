@@ -47,8 +47,25 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** Refresh access token */
+        /** Refresh tokens using refresh token from cookie */
         post: operations["AuthController_refresh"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/auth/logout": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Logout user */
+        post: operations["AuthController_logout"];
         delete?: never;
         options?: never;
         head?: never;
@@ -271,6 +288,278 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/offers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Add new offer */
+        post: operations["OffersController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/offers/p/{parentId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all offer current product */
+        get: operations["OffersController_findAll"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/offers/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get offer by ID */
+        get: operations["OffersController_findOne"];
+        put?: never;
+        post?: never;
+        /** Delete offer (soft delete) */
+        delete: operations["OffersController_remove"];
+        options?: never;
+        head?: never;
+        /** Update offer */
+        patch: operations["OffersController_update"];
+        trace?: never;
+    };
+    "/currencies": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all currencies current product */
+        get: operations["CurrenciesController_findAll"];
+        put?: never;
+        /** Add new currencies */
+        post: operations["CurrenciesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/currencies/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get currencies by ID */
+        get: operations["CurrenciesController_findOne"];
+        put?: never;
+        post?: never;
+        /** Delete currencies (soft delete) */
+        delete: operations["CurrenciesController_remove"];
+        options?: never;
+        head?: never;
+        /** Update currencies */
+        patch: operations["CurrenciesController_update"];
+        trace?: never;
+    };
+    "/barcodes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all barcodes */
+        get: operations["BarcodesController_findAll"];
+        put?: never;
+        /** Add new barcode */
+        post: operations["BarcodesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/barcodes/product/{productId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all barcode current product */
+        get: operations["BarcodesController_findByProduct"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/barcodes/offer/{offerId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all barcode current offer */
+        get: operations["BarcodesController_findByOffer"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/barcodes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get barcode by ID */
+        get: operations["BarcodesController_findOne"];
+        put?: never;
+        post?: never;
+        /** Delete barcode (soft delete) */
+        delete: operations["BarcodesController_remove"];
+        options?: never;
+        head?: never;
+        /** Update barcode */
+        patch: operations["BarcodesController_update"];
+        trace?: never;
+    };
+    "/units": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all currencies current product */
+        get: operations["UnitsController_findAll"];
+        put?: never;
+        /** Add new currencies */
+        post: operations["UnitsController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/units/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get currencies by ID */
+        get: operations["UnitsController_findOne"];
+        put?: never;
+        post?: never;
+        /** Delete currencies (soft delete) */
+        delete: operations["UnitsController_remove"];
+        options?: never;
+        head?: never;
+        /** Update currencies */
+        patch: operations["UnitsController_update"];
+        trace?: never;
+    };
+    "/pricecategories": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all price category */
+        get: operations["PriceCategoriesController_findAll"];
+        put?: never;
+        /** Add new currencies */
+        post: operations["PriceCategoriesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/pricecategories/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get price category by ID */
+        get: operations["PriceCategoriesController_findOne"];
+        put?: never;
+        post?: never;
+        /** Delete price category (soft delete) */
+        delete: operations["PriceCategoriesController_remove"];
+        options?: never;
+        head?: never;
+        /** Update price category */
+        patch: operations["PriceCategoriesController_update"];
+        trace?: never;
+    };
+    "/taxes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get all taxes */
+        get: operations["TaxesController_findAll"];
+        put?: never;
+        /** Create a new tax */
+        post: operations["TaxesController_create"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/taxes/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get tax by ID */
+        get: operations["TaxesController_findOne"];
+        put?: never;
+        post?: never;
+        /** Delete tax (soft delete) */
+        delete: operations["TaxesController_remove"];
+        options?: never;
+        head?: never;
+        /** Update Tax */
+        patch: operations["TaxesController_update"];
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -296,8 +585,8 @@ export interface components {
              *       "role": {
              *         "id": 1,
              *         "name": "user",
-             *         "createdAt": "2026-04-18T01:00:43.166Z",
-             *         "updatedAt": "2026-04-18T01:00:43.166Z"
+             *         "createdAt": "2026-05-04T11:29:00.797Z",
+             *         "updatedAt": "2026-05-04T11:29:00.797Z"
              *       }
              *     }
              */
@@ -312,6 +601,8 @@ export interface components {
             firstName: string;
             /** @example Doe */
             lastName: string;
+            /** @example Ivanovich */
+            patronymic: string;
         };
         RegisterResponseDto: {
             /** @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... */
@@ -324,11 +615,12 @@ export interface components {
              *       "email": "john@doe.ru",
              *       "firstName": "John",
              *       "lastName": "Doe",
+             *       "patronymic": "Ivanovich",
              *       "role": {
              *         "id": 1,
              *         "name": "user",
-             *         "createdAt": "2026-04-18T01:00:43.167Z",
-             *         "updatedAt": "2026-04-18T01:00:43.167Z"
+             *         "createdAt": "2026-05-04T11:29:00.799Z",
+             *         "updatedAt": "2026-05-04T11:29:00.799Z"
              *       }
              *     }
              */
@@ -341,20 +633,28 @@ export interface components {
             name: string;
             /** @example Category description */
             description?: string;
+            /** @example Category code */
+            code?: string;
             /** @description Parent section ID for nested sections */
-            parentId?: number;
+            parentId?: string;
         };
         UpdateSectionDto: {
             /** @example Category Name */
             name: string;
             /** @example Category description */
             description?: string;
+            /** @example Category code */
+            code?: string;
             /** @description Parent section ID for nested sections */
-            parentId?: number;
+            parentId?: string;
         };
         CreateProductDto: {
             /** @example Product name */
             name: string;
+            /** @example Product full name */
+            fullName: string;
+            /** @example Product code */
+            code?: string;
             /** @example Description product */
             description?: string;
             /** @example SKU-001 */
@@ -365,26 +665,34 @@ export interface components {
              * @description Category ID
              * @example category-uuid
              */
-            sectionId: number;
+            sectionId: string;
             /** @default true */
             isActive: boolean;
+            /** @description unit id */
+            unitId: string;
         };
         UpdateProductDto: {
             /** @example Product name */
-            name?: string;
+            name: string;
+            /** @example Product full name */
+            fullName: string;
+            /** @example Product code */
+            code?: string;
             /** @example Description product */
             description?: string;
             /** @example SKU-001 */
-            sku?: string;
+            sku: string;
             /** @example EX-001 */
-            xmlCode?: string;
+            xmlCode: string;
             /**
              * @description Category ID
              * @example category-uuid
              */
-            sectionId?: number;
+            sectionId: string;
             /** @default true */
             isActive: boolean;
+            /** @description unit id */
+            unitId: string;
         };
         CreateWarehouseDto: {
             /** @example Base Store */
@@ -405,6 +713,153 @@ export interface components {
             address?: string;
             /** @default true */
             isActive: boolean;
+        };
+        CreateOfferDto: {
+            /** @example Offer name */
+            name: string;
+            /**
+             * @description Product ID
+             * @example product-uuid
+             */
+            parentId: string;
+            /** @default true */
+            isActive: boolean;
+            /**
+             * @description External offer code
+             * @example ext_code_offer
+             */
+            xmlCode: string;
+        };
+        UpdateOfferDto: {
+            /** @example Offer name */
+            name: string;
+            /** @default true */
+            isActive: boolean;
+            /**
+             * @description External offer code
+             * @example ext_code_offer
+             */
+            xmlCode: string;
+        };
+        CreateCurrenciesDto: {
+            /** @example rub */
+            name: string;
+            /** @example RUB */
+            code: string;
+            /** @default false */
+            isBase: boolean;
+            /** @example Russian Ruble */
+            fullName: string;
+            /**
+             * @default 1
+             * @example 1.000
+             */
+            rate: number;
+            /** @default true */
+            isActive: boolean;
+        };
+        UpdateCurrenciesDto: {
+            /** @example rub */
+            name: string;
+            /** @example RUB */
+            code: string;
+            /** @default false */
+            isBase: boolean;
+            /** @example Russian Ruble */
+            fullName: string;
+            /**
+             * @default 1
+             * @example 1.000
+             */
+            rate: number;
+            /** @default true */
+            isActive: boolean;
+        };
+        CreateBarcodeDto: {
+            /** @example 123456789 */
+            barcode: string;
+            /** @example EAN13 */
+            type: string;
+            /** @example askjdjks... */
+            productId: string;
+            /** @example askjdjks... */
+            offerId: string;
+            /** @example asdskdak... */
+            unitId: string;
+            /** @default true */
+            isActive: boolean;
+            /** @default 1 */
+            rate: number;
+        };
+        UpdateBarcodeDto: {
+            /** @example 123456789 */
+            barcode: string;
+            /** @example EAN13 */
+            type: string;
+            /** @example askjdjks... */
+            productId: string;
+            /** @example askjdjks... */
+            offerId: string;
+            /** @example asdskdak... */
+            unitId: string;
+            /** @default true */
+            isActive: boolean;
+            /** @default 1 */
+            rate: number;
+        };
+        CreateUnitDto: {
+            /** @example 796 */
+            code: string;
+            /** @example шт */
+            name: string;
+            /** @example Штука */
+            fullName: string;
+        };
+        UpdateUnitDto: {
+            /** @example 796 */
+            code: string;
+            /** @example шт */
+            name: string;
+            /** @example Штука */
+            fullName: string;
+        };
+        CreatePriceCategoryDto: {
+            /** @example Porchasing Price */
+            name: string;
+            /** @example WH-001 */
+            code: string;
+            /** @default false */
+            isPorchasePrice: boolean;
+            /** @example asadasd... */
+            currenciesId: string;
+        };
+        UpdatePriceCategoryDto: {
+            /** @example Porchasing Price */
+            name: string;
+            /** @example WH-001 */
+            code: string;
+            /** @default false */
+            isPorchasePrice: boolean;
+            /** @example asadasd... */
+            currenciesId: string;
+        };
+        CreateTaxDto: {
+            /** @example No Taxes */
+            name: string;
+            /**
+             * @default 0
+             * @example 0
+             */
+            percent: number;
+        };
+        UpdateTaxDto: {
+            /** @example No Taxes */
+            name: string;
+            /**
+             * @default 0
+             * @example 0
+             */
+            percent: number;
         };
     };
     responses: never;
@@ -472,7 +927,7 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Access token refreshed successfully */
+            /** @description Tokens refreshed successfully */
             200: {
                 headers: {
                     [name: string]: unknown;
@@ -480,6 +935,24 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["LoginResponseDto"];
                 };
+            };
+        };
+    };
+    AuthController_logout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description User logged out successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -549,7 +1022,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -569,7 +1042,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -589,7 +1062,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -653,7 +1126,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -673,7 +1146,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -693,7 +1166,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -762,7 +1235,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -782,7 +1255,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -802,7 +1275,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -866,7 +1339,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -886,7 +1359,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -906,7 +1379,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                id: number;
+                id: string;
             };
             cookie?: never;
         };
@@ -988,6 +1461,672 @@ export interface operations {
         requestBody?: never;
         responses: {
             /** @description Image deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OffersController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOfferDto"];
+            };
+        };
+        responses: {
+            /** @description Offer add successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OffersController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                parentId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return all offer current product */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OffersController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return offer by ID */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OffersController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Offer deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    OffersController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateOfferDto"];
+            };
+        };
+        responses: {
+            /** @description Offer updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CurrenciesController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return all currencies */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CurrenciesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCurrenciesDto"];
+            };
+        };
+        responses: {
+            /** @description Currencies add successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CurrenciesController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return currencies by ID */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CurrenciesController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Currencies deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    CurrenciesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCurrenciesDto"];
+            };
+        };
+        responses: {
+            /** @description Currencies updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BarcodesController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return all barcodes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BarcodesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateBarcodeDto"];
+            };
+        };
+        responses: {
+            /** @description Barcode add successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BarcodesController_findByProduct: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                productId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return all barcode current product */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BarcodesController_findByOffer: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                offerId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return all barcode current offer */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BarcodesController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return barcode by ID */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BarcodesController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Barcode deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    BarcodesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateBarcodeDto"];
+            };
+        };
+        responses: {
+            /** @description Barcode updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UnitsController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return all currencies */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UnitsController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateUnitDto"];
+            };
+        };
+        responses: {
+            /** @description Currencies add successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UnitsController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return currencies by ID */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UnitsController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Currencies deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    UnitsController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateUnitDto"];
+            };
+        };
+        responses: {
+            /** @description Currencies updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PriceCategoriesController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return all price category */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PriceCategoriesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreatePriceCategoryDto"];
+            };
+        };
+        responses: {
+            /** @description Price category add successfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PriceCategoriesController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return price category by ID */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PriceCategoriesController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Price category deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    PriceCategoriesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdatePriceCategoryDto"];
+            };
+        };
+        responses: {
+            /** @description Price category updated successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaxesController_findAll: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return all taxes */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaxesController_create: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateTaxDto"];
+            };
+        };
+        responses: {
+            /** @description Tax created succesfully */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaxesController_findOne: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Return tax by ID */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaxesController_remove: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Tax deleted successfully */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    TaxesController_update: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateTaxDto"];
+            };
+        };
+        responses: {
+            /** @description Tax updated successfully */
             200: {
                 headers: {
                     [name: string]: unknown;
