@@ -1,114 +1,56 @@
 'use client';
 
-import { useState } from "react";
 import Link from "next/link";
 import { cn, validateEmail } from "@/lib/utils";
-import { auth } from "@/lib/api";
-import { setAccessToken } from "@/lib/api-client";
 import { useRouter } from "next/navigation";
-
-interface LoginFormData {
-    email: string;
-    password: string;
-    error?: string;
-}
+import { SubmitHandler, useForm } from "react-hook-form";
+import { IAuthForm } from "@/lib/types/auth.types";
+import { useMutation } from "@tanstack/react-query";
+import { authService } from "@/lib/services/auth.service";
+import { toast } from "sonner";
+import { DASHBOARD_ROUTE, REGISTER_ROUTE } from "@/lib/constants/routes-name";
+import { EMAIL_PATTERN } from "@/lib/constants/patterns";
+import { Input } from "@/components/ui/Input";
+import { AuthHeader } from "@/components/ui/AuthHeader";
 
 export default function LoginPage() {
-    const [formData, setFormData] = useState<LoginFormData>({
-        email: "",
-        password: "",
-        error: undefined,
+    const { push } = useRouter();
+
+    const { register, handleSubmit, reset, formState } = useForm<IAuthForm>({
+        mode: "onChange",
     });
 
-    const [errors, setErrors] = useState<Partial<LoginFormData>>({});
-    const router = useRouter();
-
-    const handleChange = (field: keyof LoginFormData, value: string) => {
-        setFormData(prev => ({ ...prev, [field]: value }));
-
-        if (errors[field]) {
-            setErrors(prev => ({ ...prev, [field]: undefined }));
+    const { mutate, isError, error } = useMutation({
+        mutationKey: ['login'],
+        mutationFn: (data: IAuthForm) => authService.login(data),
+        onSuccess() {
+            toast.success('Login successful');
+            reset();
+            push(DASHBOARD_ROUTE);
         }
-    };
+    })
 
-    const validate = (): boolean => {
-        const newErrors: Partial<LoginFormData> = {}
+    const onSubmit: SubmitHandler<IAuthForm> = data => {
+        mutate(data);
+    }
 
-        if (!formData.email) {
-            newErrors.email = "Email required";
-        } else if (!validateEmail(formData.email)) {
-            newErrors.email = "Incorrect email";
-        }
-
-        if (!formData.password) {
-            newErrors.password = "Password required";
-        } else if (formData.password.length < 6) {
-            newErrors.password = "Password must be upper 6 symbols";
-        }
-
-        setErrors(newErrors);
-
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSubmit = async ( e: React.FormEvent) => {
-        e.preventDefault();
-        if (validate()) {
-            try {
-                const response = await auth.login(formData);
-                if (response && 'access_token' in response) {
-                    setAccessToken(response.access_token);
-                    router.push('/dashboard');
-                }
-            } catch (error) {
-                setErrors({ error: "Invalid email or password" });
-                console.error("Login error:", error);
-            }
-        }
-    };
+    const emailError = formState.errors.email ? formState.errors.email.type === 'pattern' ? 'Invalid email format' : 'Email is required' : '';
+    const passwordError = formState.errors.password ? 'Password is required' : '';
 
     return (
         <>
-            <h2 className="text-2xl font-bold text-gray-900 mb-3 text-center">Авторизация</h2>
-            <p className="text-xl font-bold text-gray-600 mb-8 text-center"></p>
+            <AuthHeader title="Welcome Back!" subtitle="Please login to your account" />
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-                <div>
-                    <label htmlFor="login-email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                    <input 
-                    id="login-email" 
-                    type="email" 
-                    value={formData.email} 
-                    onChange={e => handleChange("email", e.target.value)}
-                    className={cn(
-                        "w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all",
-                        errors.email 
-                            ? "border-red-500"
-                            : "border-gray-300",
-                    )}/>
-                    { errors.email && (<p className="mt-1 text-sm text-red-500">{ errors.email }</p>)}
-                </div>
-                <div>
-                    <label htmlFor="login-password" className="block text-sm font-medium text-gray-700 mb-1">Пароль</label>
-                    <input 
-                        id="login-password"
-                        type="password"
-                        value={formData.password}
-                        onChange={e => handleChange("password", e.target.value)}
-                        className={cn(
-                            "w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all",
-                            errors.password 
-                                ? "border-red-500"
-                                : "border-gray-300",
-                        )}
-                        placeholder="******"
-                    />
-                    { errors.password && (
-                        <p className="mt-1 text-sm text-red-500">{ errors.password }</p>
-                    )}
-                </div>
-                { errors.error && (
-                    <p className="text-sm text-red-500 text-center">{ errors.error }</p>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+                <Input label="Email" type="email" {...register("email", { required: 'Email is required', pattern: {
+                        value: EMAIL_PATTERN,
+                        message: 'Invalid email format'
+                } })} error={emailError} />
+                
+                <Input label="Пароль" type="password" {...register("password", { required: 'Password is required' })} error={passwordError} placeholder="******" />
+
+                {isError && (
+                    <p className="text-sm text-red-500 text-center">{error?.message}</p>
                 )}
                 <button
                     type="submit"
@@ -118,7 +60,7 @@ export default function LoginPage() {
                 <p className="text-center text-sm text-gray-600">
                     Нет аккаунта? {" "}
                     <Link
-                        href="/auth/register"
+                        href={REGISTER_ROUTE}
                         className="text-blue-600 hover:text-blue-700 font-medium"
                     >Зарегистрироваться</Link>
                 </p>

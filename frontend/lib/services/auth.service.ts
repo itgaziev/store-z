@@ -1,13 +1,21 @@
 import { axiosInstance } from "../api/interceptors";
-import { IAuthForm, IAuthResponse } from "../types/auth.types";
+import { IAuthForm, IAuthResponse, IRegisterForm } from "../types/auth.types";
 import { removeFromStorage, setAccessToken } from "./auth-token.service";
 
 export const authService = {
-    async main(type: 'login' | 'register', data: IAuthForm) {
-        const endpoint = type === 'login' ? '/auth/login' : '/auth/register';
+    async login(data: IAuthForm) {
+        const endpoint = '/auth/login';
         const response = await axiosInstance.post<IAuthResponse>(endpoint, data);
-
+        console.log('Auth response:', response.data);
         if (response.data.accessToken) setAccessToken(response.data.accessToken);
+        return response;
+    },
+
+    async register(data: IRegisterForm) {
+        const endpoint = '/auth/register';
+        const { confirmPassword, ...requestData } = data;
+        const response = await axiosInstance.post<IAuthResponse>(endpoint, requestData);
+        //if (response.data.accessToken) setAccessToken(response.data.accessToken);
         return response;
     },
 

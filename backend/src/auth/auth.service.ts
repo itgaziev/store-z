@@ -74,15 +74,7 @@ export class AuthService {
             roleId: undefined
         });
 
-        const payload = {
-            email: user.email,
-            sub: user.id,
-            role: user.role
-        };
-        const { accessToken, refreshToken } = this.issueToken(payload);
         return {
-            accessToken: accessToken,
-            refreshToken: refreshToken,
             user: {
                 id: user.id,
                 email: user.email,

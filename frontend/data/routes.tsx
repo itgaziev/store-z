@@ -9,4 +9,14 @@ export const routes: MenuItem[] = [
         label: 'Рабочий стол',
         href: '/dashboard',
     },
+    {
+        label: 'Настройки',
+        href: '#',
+        children: [
+            {
+                label: 'Пользователи',
+                href: '/dashboard/users',
+            }
+        ]
+    }
 ];

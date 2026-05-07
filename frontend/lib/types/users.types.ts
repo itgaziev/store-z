@@ -23,3 +23,10 @@ export interface IPermission {
     modelName: string;
     access: number;
 }
+
+export interface IUserResponse extends IUser {
+    password: string; // Remove later
+    createdAt: string;
+    updatedAt: string;
+    deletedAt: string;
+}

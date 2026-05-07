@@ -1,19 +1,19 @@
 import Cookies from 'js-cookie';
-
-export enum EnumTokens {
-    ACCESS_TOKEN = 'accessToken',
-    REFRESH_TOKEN = 'refreshToken',
-}
+import { ACCESS_TOKEN_COOKIE_NAME } from '../constants/cookies-name';
 
 export const getAccessToken = (): string | null => {
-    const accessToken = Cookies.get(EnumTokens.ACCESS_TOKEN);
+    const accessToken = Cookies.get(ACCESS_TOKEN_COOKIE_NAME);
     return accessToken || null;
 }
 
 export const setAccessToken = (accessToken: string, expires: number = 1): void => {
-    Cookies.set(EnumTokens.ACCESS_TOKEN, accessToken, { expires: expires / (24 * 60 * 60) });
+    Cookies.set(ACCESS_TOKEN_COOKIE_NAME, accessToken, { 
+        domain: 'localhost',
+        sameSite: 'strict',
+        expires: expires
+    });
 }
 
 export const removeFromStorage = (): void => {
-    Cookies.remove(EnumTokens.ACCESS_TOKEN);
+    Cookies.remove(ACCESS_TOKEN_COOKIE_NAME);
 }

@@ -11,12 +11,15 @@ async function bootstrap() {
 
     const configService = app.get(ConfigService);
     const port = configService.get<number>('PORT') || 3000
+    
+    app.setGlobalPrefix('api');
 
     app.use(cookieParser());
 
     app.enableCors({
-        origin: 'locahost',
+        origin: ['http://localhost:3001', 'http://localhost:4000'],
         credentials: true,
+        exposedHeaders: ['Set-Cookie']
     });
 
     app.useGlobalPipes(
@@ -52,7 +55,7 @@ async function bootstrap() {
 
 
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, document, {
+    SwaggerModule.setup('docs', app, document, {
         swaggerOptions: {
             persistAuthorization: true
         }
@@ -61,6 +64,6 @@ async function bootstrap() {
     await app.listen(port);
 
     console.log(`Application is running on: http://localhost:${port}`);
-    console.log(`Swagger documentation: http://localhost:${port}/api`);
+    console.log(`Swagger documentation: http://localhost:${port}/docs`);
 }
 bootstrap();

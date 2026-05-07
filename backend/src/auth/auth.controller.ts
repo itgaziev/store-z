@@ -42,10 +42,8 @@ export class AuthController {
     @ApiOkResponse({ description: 'User registered successfully', type: RegisterResponseDto })
     async register(@Body() registerDto: RegisterDto, @Res({ passthrough: true }) res: Response) {
         const result = await this.authService.register(registerDto);
-        this.setCookies(res, result.refreshToken);
-        
-        const { refreshToken: _, ...responseData } = result;
-        return responseData;
+
+        return result;
     }
 
     @Post('refresh')
