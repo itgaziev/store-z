@@ -1,6 +1,5 @@
 import { Heading } from "@/components/layout/Heading";
 import { SearchTable } from "@/components/tables/SearchTable";
-import { SearchIcon } from "lucide-react";
 
 export default function UsersPage() {
     return (
@@ -11,6 +10,11 @@ export default function UsersPage() {
                 <div className="flex-1 flex flex-col min-h-0">
                     <div className="bg-white border border-gray-200 rounded-lg p-4 shrink-0">
                         <SearchTable />
+                    </div>
+                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex-1 min-h-0 flex flex-col">
+                        <div className="overflow-auto flex-1 custom-scrollbar">
+
+                        </div>
                     </div>
                 </div>
             </div>
