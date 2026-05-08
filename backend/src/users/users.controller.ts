@@ -29,8 +29,8 @@ export class UsersController {
     @Permissions({ model: ModelNameEnum.USER, access: AccessEnum.READ })
     @ApiOperation({ summary: 'Get all users'})
     @ApiResponse({ status: 200, description: 'Return all users'})
-    findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-        return this.usersService.findAll(+page, +limit);
+    findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10, @Query('sortBy') sortBy: string = 'createdAt', @Query('order') order: 'ASC' | 'DESC' = 'DESC', @Query('searchTerm') searchTerm: string = '') {
+        return this.usersService.findAll(+page, +limit, sortBy, order, searchTerm);
     }
 
     @Get('me')

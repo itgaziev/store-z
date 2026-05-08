@@ -1,7 +1,7 @@
 import { BadRequestException, ConflictException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { Role } from './entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt'
@@ -15,7 +15,7 @@ export class UsersService {
 
         @InjectRepository(Role)
         private rolesRepository: Repository<Role>
-    ) {}
+    ) { }
 
     async create(createUserDto: CreateUserDto): Promise<User> {
         const existingUser = await this.usersRepository.findOne({
@@ -28,8 +28,8 @@ export class UsersService {
         }
 
         const role = createUserDto.roleId
-            ? await this.rolesRepository.findOne({ where: { id: createUserDto.roleId }})
-            : await this.rolesRepository.findOne({ where: { code: 'USER' }});
+            ? await this.rolesRepository.findOne({ where: { id: createUserDto.roleId } })
+            : await this.rolesRepository.findOne({ where: { code: 'USER' } });
 
         if (!role) {
             throw new BadRequestException('Role not found')
@@ -46,12 +46,28 @@ export class UsersService {
         return this.usersRepository.save(user);
     }
 
-    async findAll(page: number = 1, limit: number = 10): Promise<{ data: User[]; total: number; page: number; limit: number}> {
+    async findAll(
+        page: number = 1,
+        limit: number = 10,
+        sortBy: string = 'createdAt',
+        order: 'ASC' | 'DESC' = 'DESC',
+        searchTerm: string = '',
+    ): Promise<{ data: User[]; total: number; page: number; limit: number }> {
         const [data, total] = await this.usersRepository.findAndCount({
             relations: ['role'],
             skip: (page - 1) * limit,
             take: limit,
             withDeleted: true,
+            order: {
+                [sortBy]: order
+            },
+            where: searchTerm
+                ? [
+                    { email: ILike(`%${searchTerm}%`) },
+                    { firstName: ILike(`%${searchTerm}%`) },
+                    { lastName: ILike(`%${searchTerm}%`) }
+                ]
+                : {}
         });
 
         return { data, total, page, limit }
@@ -87,7 +103,7 @@ export class UsersService {
         }
 
         if (updateUserDto.roleId) {
-            const role = await this.rolesRepository.findOne({ where: { id: updateUserDto.roleId }});
+            const role = await this.rolesRepository.findOne({ where: { id: updateUserDto.roleId } });
 
             if (!role) {
                 throw new BadRequestException('Role not found');

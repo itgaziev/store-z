@@ -14,7 +14,7 @@ export interface IRole {
     name: string;
     createdAt: string;
     updatedAt: string;
-    permissions: IPermission[];
+    permissions?: IPermission[];
 }
 
 export interface IPermission {
