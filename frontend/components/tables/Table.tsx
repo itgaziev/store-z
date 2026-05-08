@@ -43,14 +43,41 @@ export const Table: React.FC<TableProps> = ({
     const loadMoreRef = useRef<HTMLDivElement>(null);
     const currentSortKey = sortBy;
     const loadingRef = useRef(false);
-    const prevDataLengthRef = useRef(data.length);
+    const prevDataLengthRef = useRef(0);
+    const observerRef = useRef<IntersectionObserver | null>(null);
 
-    useEffect(() => {
-        if (data.length > prevDataLengthRef.current) {
-            loadingRef.current = false;
-            prevDataLengthRef.current = data.length;
+    const handleLoadMore = () => {
+        if (!hasMore || isLoading || !onLoadMore || loadingRef.current) return;
+        
+        const tableContainer = loadMoreRef.current?.closest('.overflow-auto') as HTMLDivElement | null;
+        
+        loadingRef.current = true;
+        onLoadMore();
+
+        if (tableContainer) {
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    const isScrollable = tableContainer.scrollHeight > tableContainer.clientHeight + 10;
+                    
+                    if (!isScrollable && hasMore) {
+                        loadingRef.current = false;
+                        handleLoadMore();
+                    } else if (!observerRef.current) {
+                        observerRef.current = new IntersectionObserver(entries => {
+                            if (entries[0].isIntersecting) {
+                                loadingRef.current = false;
+                                handleLoadMore();
+                            }
+                        }, { rootMargin: '200px' });
+                        
+                        if (loadMoreRef.current) {
+                            observerRef.current.observe(loadMoreRef.current);
+                        }
+                    }
+                });
+            });
         }
-    }, [data.length]);
+    };
 
 
     const handleSort = (column: Column) => {
@@ -84,43 +111,31 @@ export const Table: React.FC<TableProps> = ({
     }
 
     useEffect(() => {
-        if (!hasMore || isLoading || !onLoadMore) return;
-
-        const tableContainer = loadMoreRef.current?.closest('.overflow-auto') as HTMLDivElement | null;
-
-        if (!tableContainer) {
-            onLoadMore();
-            return;
-        }
-
-        const loadMore = () => {
-            if (loadingRef.current) return;
-
-            const isScrollable = tableContainer.scrollHeight > tableContainer.clientHeight + 10;
-
-            if (!isScrollable) {
-                loadingRef.current = true;
-                onLoadMore();
-                return;
-            }
-
-            loadingRef.current = true;
-            const observer = new IntersectionObserver(entries => {
-                if (entries[0].isIntersecting) {
-                    onLoadMore();
-                }
-            }, { rootMargin: '200px' });
-
-            if (loadMoreRef.current) {
-                observer.observe(loadMoreRef.current);
-            }
-
-            return () => observer.disconnect();
-        };
-
-        requestAnimationFrame(() => requestAnimationFrame(loadMore));
+        handleLoadMore();
     }, [hasMore, isLoading, onLoadMore, data]);
 
+
+    useEffect(() => {
+        if (data.length !== prevDataLengthRef.current) {
+            if (data.length > prevDataLengthRef.current || data.length === 0) {
+                loadingRef.current = false;
+                if (observerRef.current) {
+                    observerRef.current.disconnect();
+                    observerRef.current = null;
+                }
+            }
+            prevDataLengthRef.current = data.length;
+        }
+    }, [data.length]);
+
+    useEffect(() => {
+        return () => {
+            if (observerRef.current) {
+                observerRef.current.disconnect();
+            }
+        };
+    }, []);
+        
     return (
         <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
