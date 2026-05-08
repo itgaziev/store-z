@@ -52,7 +52,7 @@ export default function UsersPage() {
                     <div className="bg-white border border-gray-200 rounded-lg p-4 shrink-0">
                         <SearchTable onSearch={handleSearch} />
                     </div>
-                    <div className="bg-white border border-gray-200 rounded-lg overflow-hidden flex-1 min-h-0 flex flex-col">
+                    <div className="bg-white border border-gray-200 rounded-lg mt-3 overflow-hidden flex-1 min-h-0 flex flex-col">
                         <div className="overflow-auto flex-1 custom-scrollbar">
                             <Table
                                 columns={columns}

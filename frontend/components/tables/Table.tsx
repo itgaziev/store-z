@@ -26,22 +26,31 @@ interface TableProps {
 }
 
 export const Table: React.FC<TableProps> = ({
-        columns,
-        data,
-        hasActions,
-        selectItemAction,
-        isLoading,
-        hasMore,
-        onLoadMore,
-        sortBy,
-        sortDirection: initialSortDirection,
-        onSort
-    }) => {
+    columns,
+    data,
+    hasActions,
+    selectItemAction,
+    isLoading,
+    hasMore,
+    onLoadMore,
+    sortBy,
+    sortDirection: initialSortDirection,
+    onSort
+}) => {
 
     const [sortDirection, setSortDirection] = useState<SortDirection>(initialSortDirection || 'DESC');
     const [selectedRow, setSelectedRow] = useState<any>(null);
     const loadMoreRef = useRef<HTMLDivElement>(null);
     const currentSortKey = sortBy;
+    const loadingRef = useRef(false);
+    const prevDataLengthRef = useRef(data.length);
+
+    useEffect(() => {
+        if (data.length > prevDataLengthRef.current) {
+            loadingRef.current = false;
+            prevDataLengthRef.current = data.length;
+        }
+    }, [data.length]);
 
 
     const handleSort = (column: Column) => {
@@ -77,18 +86,40 @@ export const Table: React.FC<TableProps> = ({
     useEffect(() => {
         if (!hasMore || isLoading || !onLoadMore) return;
 
-        const observer = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) {
-                onLoadMore();
-            }
-        }, { rootMargin: '100px' });
+        const tableContainer = loadMoreRef.current?.closest('.overflow-auto') as HTMLDivElement | null;
 
-        if (loadMoreRef.current) {
-            observer.observe(loadMoreRef.current);
+        if (!tableContainer) {
+            onLoadMore();
+            return;
         }
 
-        return () => observer.disconnect();
-    }, [hasMore, isLoading, onLoadMore]);
+        const loadMore = () => {
+            if (loadingRef.current) return;
+
+            const isScrollable = tableContainer.scrollHeight > tableContainer.clientHeight + 10;
+
+            if (!isScrollable) {
+                loadingRef.current = true;
+                onLoadMore();
+                return;
+            }
+
+            loadingRef.current = true;
+            const observer = new IntersectionObserver(entries => {
+                if (entries[0].isIntersecting) {
+                    onLoadMore();
+                }
+            }, { rootMargin: '200px' });
+
+            if (loadMoreRef.current) {
+                observer.observe(loadMoreRef.current);
+            }
+
+            return () => observer.disconnect();
+        };
+
+        requestAnimationFrame(() => requestAnimationFrame(loadMore));
+    }, [hasMore, isLoading, onLoadMore, data]);
 
     return (
         <table className="w-full">
