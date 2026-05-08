@@ -38,7 +38,7 @@ export const Table: React.FC<TableProps> = ({
         onSort
     }) => {
 
-    const [sortDirection, setSortDirection] = useState<SortDirection>('DESC');
+    const [sortDirection, setSortDirection] = useState<SortDirection>(initialSortDirection || 'DESC');
     const [selectedRow, setSelectedRow] = useState<any>(null);
     const loadMoreRef = useRef<HTMLDivElement>(null);
     const currentSortKey = sortBy;
