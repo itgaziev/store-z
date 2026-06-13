@@ -8,6 +8,7 @@ import { IUserResponse } from "@/lib/types/users.types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { Table } from "@/components/tables/Table";
 import { useState } from "react";
+import { SortDirection } from "@/lib/types/table.types";
 
 const columns: { key: string; label: string; isSortable?: boolean }[] = [
     { key: 'email', label: 'Email', isSortable: true },
@@ -15,14 +16,13 @@ const columns: { key: string; label: string; isSortable?: boolean }[] = [
     { key: 'lastName', label: 'Фамилия', isSortable: true },
 ];
 
-type SortDirection = 'ASC' | 'DESC';
 
 export default function UsersPage() {
     const [searchTerm, setSearchTerm] = useState('');
     const [sortBy, setSortBy] = useState<string>('email');
     const [sortDirection, setSortDirection] = useState<SortDirection>('DESC');
 
-    const { data, isLoading, hasNextPage, fetchNextPage } = useInfiniteQuery({
+    const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage, status } = useInfiniteQuery({
         queryKey: ['users', searchTerm, sortBy, sortDirection],
         queryFn: async ({ pageParam = 1}) => userService.getAll(pageParam, 10, sortBy, sortDirection, searchTerm),
         getNextPageParam: (lastPage: IPaginatedResponse<IUserResponse>) => {
@@ -41,6 +41,10 @@ export default function UsersPage() {
     const handleSort = (key: string, direction: SortDirection) => {
         setSortBy(key);
         setSortDirection(direction);
+    }
+
+    const selectItemHandler = (item: IUserResponse) => {
+        console.log('Selected item: ', item);
     }
 
     return (
@@ -63,6 +67,7 @@ export default function UsersPage() {
                                 sortBy={sortBy}
                                 sortDirection={sortDirection}
                                 onSort={handleSort}
+                                selectItemAction={selectItemHandler}
                             />
                         </div>
                     </div>

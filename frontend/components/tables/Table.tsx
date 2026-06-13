@@ -1,16 +1,15 @@
 'use client';
 
+import { SortDirection } from "@/lib/types/table.types";
 import { cn } from "@/lib/utils";
 import { ArrowDownAz, ArrowUpAz, LoaderPinwheel } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Column {
     key: string;
     label: string;
     isSortable?: boolean;
 }
-
-type SortDirection = 'ASC' | 'DESC';
 
 interface TableProps {
     columns: Column[];
@@ -135,7 +134,7 @@ export const Table: React.FC<TableProps> = ({
             }
         };
     }, []);
-        
+
     return (
         <table className="w-full">
             <thead className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
@@ -156,7 +155,7 @@ export const Table: React.FC<TableProps> = ({
             </thead>
             <tbody className="divide-y divide-gray-200">
                 {data.map((row, index) => (
-                    <tr key={index}
+                    <tr key={row.id || index}
                         onClick={() => selectRow(row)}
                         className={cn(
                             'cursor-pointer transition-colors duration-200',
