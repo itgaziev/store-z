@@ -1,20 +1,14 @@
 'use client';
 import { Heading } from "@/components/layout/Heading";
+import { StoreTable } from "@/components/tables/StoreTable";
+import { userService } from "@/lib/services/users.services";
+import { IPaginatedResponse } from "@/lib/types/paginates.types";
+import { SortDirection, TableData } from "@/lib/types/table.types";
+import { IUserColumn, IUserResponse, IUserTableRow, UserColumns } from "@/lib/types/users.types";
 import { cn } from "@/lib/utils";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { SearchIcon } from "lucide-react";
-import { useState } from "react";
-
-interface Column {
-    id: string;
-    title: string;
-    width: number | string;
-    show: boolean;
-    sortable: boolean;
-}
-interface TableData {
-    columns: Column[];
-    rows: Record<string, any>[];
-}
+import { useEffect, useState } from "react";
 
 
 const demoData: TableData = {
@@ -33,61 +27,36 @@ const demoData: TableData = {
 };
 
 export default function DemoPage() {
-    const [multipleSelect, setMultipleSelect] = useState(false);
-    const [selectedItems, setSelectedItems] = useState<number[]>([]);
-    const [lastSelectedId, setLastSelectedId] = useState<number | null>(null);
+    const [columns, setColumns] = useState<IUserColumn[]>(UserColumns);
+    const [searchTerm, setSearchTerm] = useState('');
+    const [sortBy, setSortBy] = useState<string>('id');
+    const [sortDirection, setSortDirection] = useState<SortDirection>('DESC');
 
-    const keyHandler = (event: KeyboardEvent) => {
-        if (event.key === 'LCtrl') {
-            // Handle Ctrl key press if needed
-            // For example, you could set a flag to indicate that the Ctrl key is being held
-            setMultipleSelect(true);
-        }
-    };
-    
-    const itemClickHandler = (event: React.MouseEvent, itemId: number) => {
-        // Отменяем стандартное выделение текста при зажатом Shift
-        if (event.shiftKey) {
-            event.preventDefault();
-        }
+    const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage, status } = useInfiniteQuery({
+        queryKey: ['users', searchTerm, sortBy, sortDirection],
+        queryFn: async ({ pageParam = 1 }) => userService.getAllRow(pageParam, 40, sortBy, sortDirection, searchTerm),
+        getNextPageParam: (lastPage: IPaginatedResponse<IUserTableRow>) => {
+            const { page, total, limit } = lastPage;
+            return page < Math.ceil(total / limit) ? page + 1 : undefined;
+        },
+        initialPageParam: 1,
+    });
 
-        const isMac = typeof window !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
-        const isCmdOrCtrl = isMac ? event.metaKey : event.ctrlKey;
+    const flatUsers = data?.pages.flatMap(page => page.data) || [];
 
-        if (event.shiftKey && lastSelectedId !== null) {
-            const start = Math.min(lastSelectedId, itemId);
-            const end = Math.max(lastSelectedId, itemId);
-
-            const rangeIds = Array.from({ length: end - start + 1 }, (_, i) => start + i);
-
-            if (isCmdOrCtrl) {
-                setSelectedItems((prev) => Array.from(new Set([...prev, ...rangeIds])));
-            } else {
-                setSelectedItems(rangeIds);
+    const onSelectRow = (indexs: number[]) => {
+        demoData.rows.map((row: Record<string, any>, i: number) => {
+            if (indexs.includes(i)) {
+                console.log(row);
             }
-            return;
+        })
+    }
+    useEffect(() => {
+        if (data) {
+            const flatUsersD = data?.pages.flatMap(page => page.data) || [];
+            console.log(flatUsersD);
         }
-
-        if (isCmdOrCtrl) {
-            setSelectedItems((prevSelected) => {
-                if (prevSelected.includes(itemId)) {
-                    return prevSelected.filter((id) => id !== itemId);
-                } else {
-                    return [...prevSelected, itemId];
-                }
-            });
-        }
-        else {
-            setSelectedItems([itemId]);
-        }
-
-        setLastSelectedId(itemId);
-    };
-
-    const itemDoubleClickHandler = (itemId: number) => {
-        console.log(`Двойной клик по элементу с ID: ${itemId}`);
-    };
-
+    }, [data])
     return (
         <div className="h-[calc(100vh-8rem)] flex flex-col">
             <Heading title="Демо" description="Здесь вы можете протестировать компоненты, которые будут использоваться в вашем магазине" />
@@ -107,44 +76,24 @@ export default function DemoPage() {
                     <input
                         type="text"
                         placeholder="Поиск ..."
-                        className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                        className="w-full pl-10 pr-4 py-2.5 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
                     />
                 </div>
             </div>
-            <div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0 bg-white border border-gray-200 rounded-lg">
-                <div className="flex-1 shrink-0 custom-scrollbar overflow-auto">
-                    <table className="w-full select-none">
-                        <thead className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
-                            <tr>
-                                { /* Render column headers based on demoData.columns */}
-                                { demoData.columns.map((col) => (
-                                    <th key={col.id} className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase" style={{ width: col.width == 'auto' ? 'auto' : `${col.width}px` }}>
-                                        {col.title}
-                                    </th>
-                                )) }
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-gray-200">
-                            { /* Render rows based on demoData.rows */}
+            <div className="flex flex-col lg:flex-row flex-1 min-h-0 bg-white border border-gray-200 rounded-lg overflow-hidden" >
 
-                            {demoData.rows.map((row) => (
-                                <tr key={row.id} className={cn("hover:bg-blue-50 cursor-pointer", {
-                                    "bg-blue-100": selectedItems.includes(row.id),
-                                })} 
-                                onClick={(e) => itemClickHandler(e, row.id)}
-                                onDoubleClick={() => itemDoubleClickHandler(row.id)}>
-                                    {demoData.columns.map((col) => (
-                                        <td key={col.id} className="px-4 py-3 text-xs text-gray-900">
-                                            {row[col.id as keyof typeof row]}
-                                        </td>
-                                    ))}
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                <div className="flex-1 min-w-0 overflow-x-auto custom-scrollbar">
+                    <StoreTable
+                        isMulti={true}
+                        rows={flatUsers}
+                        columns={columns}
+                        onSelect={onSelectRow}
+                    />
                 </div>
-                <div className="w-100 shrink-0">
-                    <p>Содержимое 2</p>
+
+                {/* ПРАВАЯ ПАНЕЛЬ (Содержимое 2) */}
+                <div className="w-80 shrink-0 border-l border-gray-200 p-4 bg-gray-50/50">
+                    <p className="font-medium text-gray-700">Содержимое 2</p>
                 </div>
             </div>
         </div>
