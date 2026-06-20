@@ -29,9 +29,9 @@ export default function DashboardLayout({
                 </div>
             </div>
 
-            <div className={`flex-1 transition-all duration-300 ${isSidebarVisible ? "lg:pl-64" : ""}`}>
+            <div className={`flex-1 transition-all duration-300 ${isSidebarVisible ? "lg:pl-64" : ""} overflow-hidden`}>
                 <Header />
-                <main className="p-4 lg:p-6">{ children }</main>
+                <main className="p-4 lg:p-6 overflow-hidden">{ children }</main>
             </div>
         </div>
     );

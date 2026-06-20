@@ -52,13 +52,13 @@ export interface IUserColumn extends Column {
 
 export const UserColumns: IUserColumn[] = [
     { id: 'id', title: 'ID', width: 80, show: false, sortable: true }, // скрыта по умолчанию
-    { id: 'email', title: 'Email', width: 250, show: true, sortable: true },
-    { id: 'firstName', title: 'Имя', width: 250, show: true, sortable: true },
-    { id: 'lastName', title: 'Фамилия', width: 250, show: true, sortable: true },
-    { id: 'patronymic', title: 'Отчество', width: 250, show: true, sortable: false },
+    { id: 'email', title: 'Email', width: 'auto', show: true, sortable: true },
+    { id: 'firstName', title: 'Имя', width: 150, show: true, sortable: true },
+    { id: 'lastName', title: 'Фамилия', width: 150, show: true, sortable: true },
+    { id: 'patronymic', title: 'Отчество', width: 150, show: true, sortable: false },
     { id: 'roleName', title: 'Роль', width: 120, show: true, sortable: true },
-    { id: 'isActive', title: 'Активный', width: 100, show: true, sortable: true },
+    { id: 'isActive', title: 'Статус', width: 100, show: true, sortable: true },
     { id: 'createdAt', title: 'Создан', width: 150, show: true, sortable: true },
-    { id: 'updatedAt', title: 'Обновлен', width: 150, show: true, sortable: true }, // скрыта
-    { id: 'deletedAt', title: 'Удален', width: 150, show: true, sortable: true },    
+    { id: 'updatedAt', title: 'Обновлен', width: 150, show: false, sortable: true }, // скрыта
+    { id: 'deletedAt', title: 'Удален', width: 150, show: false, sortable: true },    
 ]
