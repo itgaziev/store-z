@@ -1,5 +1,6 @@
 'use client';
 import { Heading } from "@/components/layout/Heading";
+import { TableSidebar } from "@/components/tables/TableSidebar";
 import { StoreTable } from "@/components/tables/StoreTable";
 import { userService } from "@/lib/services/users.services";
 import { IPaginatedResponse } from "@/lib/types/paginates.types";
@@ -95,7 +96,7 @@ export default function DemoPage() {
 
                 {/* ПРАВАЯ ПАНЕЛЬ (Содержимое 2) */}
                 <div className="w-80 shrink-0 bg-white border border-gray-200 p-4">
-                    <p className="font-medium text-gray-700">Содержимое 2</p>
+                    <TableSidebar hasTree={true} />
                 </div>
             </div>
         </div>
