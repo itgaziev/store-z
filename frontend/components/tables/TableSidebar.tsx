@@ -9,6 +9,8 @@ import {
     CircleMinus,
     Circle
 } from 'lucide-react';
+import { FilterView } from './FilterView';
+import { UserFilterConfig } from '@/lib/types/users.types';
 
 type TabType = 'filter' | 'tree';
 
@@ -46,20 +48,8 @@ export const TableSidebar = ({ hasTree = true }: { hasTree?: boolean }) => {
             {/* Контентная часть со своим скроллом */}
             <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
                 {activeTab === 'tree' && <TreeView />}
-                {activeTab === 'filter' && <FilterView />}
+                {activeTab === 'filter' && <FilterView config={UserFilterConfig}/>}
             </div>
-
-            {/* Нижняя панель кнопок (только для фильтра) */}
-            {activeTab === 'filter' && (
-                <div className="p-4 border-t border-gray-200 bg-gray-50 flex gap-2">
-                    <button className="flex-1 px-3 py-2 bg-blue-600 text-white text-xs font-medium rounded hover:bg-blue-700 transition-colors">
-                        Применить
-                    </button>
-                    <button className="px-3 py-2 bg-white border border-gray-300 text-gray-700 text-xs font-medium rounded hover:bg-gray-50 transition-colors">
-                        Отключить
-                    </button>
-                </div>
-            )}
         </div>
     );
 };
@@ -113,70 +103,6 @@ const TreeNode = ({ node, depth }: { node: any, depth: number }) => {
                     ))}
                 </div>
             )}
-        </div>
-    );
-};
-
-// --- Вспомогательный компонент: Форма фильтров ---
-const FilterView = () => {
-    return (
-        <div className="space-y-5">
-            {/* Артикул */}
-            <div className="space-y-1.5">
-                <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Артикул</label>
-                <div className="flex gap-1">
-                    <select className="w-20 text-[12px] border border-gray-300 rounded px-1 outline-none focus:ring-1 focus:ring-blue-500">
-                        <option>Равно</option>
-                        <option>Содержит</option>
-                    </select>
-                    <input type="text" className="flex-1 text-[12px] border border-gray-300 rounded px-2 py-1.5 outline-none focus:ring-1 focus:ring-blue-500" />
-                </div>
-            </div>
-
-            {/* Вид товара */}
-            <div className="space-y-1.5">
-                <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Вид товара</label>
-                <div className="relative">
-                    <select className="w-full text-[12px] border border-gray-300 rounded px-2 py-1.5 appearance-none outline-none focus:ring-1 focus:ring-blue-500 bg-white">
-                        <option>Все товары</option>
-                        <option>Услуги</option>
-                    </select>
-                    <ChevronDown className="absolute right-2 top-2 w-4 h-4 text-gray-400 pointer-events-none" />
-                </div>
-            </div>
-
-            {/* Цена */}
-            <div className="space-y-1.5">
-                <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Цена (от - до)</label>
-                <div className="flex items-center gap-2">
-                    <input type="number" placeholder="0" className="w-full text-[12px] border border-gray-300 rounded px-2 py-1.5 outline-none" />
-                    <span className="text-gray-400">—</span>
-                    <input type="number" placeholder="999..." className="w-full text-[12px] border border-gray-300 rounded px-2 py-1.5 outline-none" />
-                </div>
-            </div>
-
-             {/* Категория */}
-             <div className="space-y-1.5">
-                <label className="text-[11px] font-bold text-gray-500 uppercase tracking-wider">Категория</label>
-                <div className="p-2 border border-gray-200 rounded-md bg-gray-50/50 max-h-32 overflow-y-auto space-y-2">
-                    {['Продукты', 'Химия', 'Одежда', 'Прочее'].map(cat => (
-                        <label key={cat} className="flex items-center gap-2 cursor-pointer group">
-                            <input type="checkbox" className="w-3.5 h-3.5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" />
-                            <span className="text-xs text-gray-600 group-hover:text-gray-900">{cat}</span>
-                        </label>
-                    ))}
-                </div>
-            </div>
-
-            {/* Дополнительные блоки (аккордеоны) */}
-            <div className="pt-2">
-                {['Характеристики', 'Аналитика'].map(item => (
-                    <div key={item} className="border-t border-gray-100 py-2.5 flex items-center justify-between cursor-pointer hover:bg-gray-50 px-1">
-                        <span className="text-xs text-gray-600">{item}</span>
-                        <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
-                    </div>
-                ))}
-            </div>
         </div>
     );
 };

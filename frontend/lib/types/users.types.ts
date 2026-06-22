@@ -1,4 +1,4 @@
-import { Column } from "./table.types";
+import { Column, IFilterTable } from "./table.types";
 
 export interface IUser {
     id: string;
@@ -60,5 +60,19 @@ export const UserColumns: IUserColumn[] = [
     { id: 'isActive', title: 'Статус', width: 100, show: true, sortable: true },
     { id: 'createdAt', title: 'Создан', width: 150, show: true, sortable: true },
     { id: 'updatedAt', title: 'Обновлен', width: 150, show: false, sortable: true }, // скрыта
-    { id: 'deletedAt', title: 'Удален', width: 150, show: false, sortable: true },    
+    { id: 'deletedAt', title: 'Удален', width: 150, show: false, sortable: true },
+]
+
+export const UserFilterConfig: IFilterTable[] = [
+    { id: 'searchTerm', title: 'Поиск по тексту', type: 'STRING', placeholder: 'Имя, email...' },
+    { id: 'isActive', title: 'Только активные сотрудники', type: 'CHECKBOX' },
+    {
+        id: 'roleId',
+        title: 'Роль сотрудника',
+        type: 'MODAL',
+        endpoint: '/users/roles',
+        bindLabel: 'name',
+        bindValue: 'id',
+        placeholder: 'Нажмите для выбора роли...'
+    },
 ]
