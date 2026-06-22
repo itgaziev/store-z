@@ -33,6 +33,14 @@ export class UsersController {
         return this.usersService.findAll(+page, +limit, sortBy, order, searchTerm);
     }
 
+    @Get('roles')
+    @Permissions({ model: ModelNameEnum.USER, access: AccessEnum.READ })
+    @ApiOperation({ summary: 'Get all roles'})
+    @ApiResponse({ status: 200, description: 'Return all roles'})
+    getRoles() {
+        return this.usersService.getRoles();
+    }
+
     @Get('me')
     @ApiOperation({ summary: 'Get current user'})
     @ApiResponse({ status: 200, description: 'Return current user'})

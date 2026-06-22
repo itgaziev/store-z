@@ -73,6 +73,10 @@ export class UsersService {
         return { data, total, page, limit }
     }
 
+    async getRoles(): Promise<Role[]> {
+        return await this.rolesRepository.find();
+    }
+
     async findOne(id: string): Promise<User> {
         const user = await this.usersRepository.findOne({
             where: { id },
