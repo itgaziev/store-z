@@ -26,7 +26,7 @@ export interface IFilterTableOption {
 export interface IFilterTable {
     id: string;
     title: string;
-    type: 'STRING' | 'SELECT' | 'CHECKBOX' | 'MODAL' | 'BOOLEAN' | 'NUMBER';
+    type: 'STRING' | 'SELECT' | 'CHECKBOX' | 'MODAL' | 'BOOLEAN' | 'NUMBER' | 'DATE';
     endpoint?: string; // Для SELECT и MODAL, откуда качать данные
     
     // Новые полезные поля:
@@ -34,4 +34,5 @@ export interface IFilterTable {
     // Ключи, которые нужно вытащить из ответа бэкенда для отображения
     bindLabel?: string; // например, 'name' или 'email'
     bindValue?: string; // например, 'id'
+    options?: { value: string | number; label: string }[]
 }

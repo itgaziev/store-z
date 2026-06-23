@@ -67,6 +67,7 @@ export const UserFilterConfig: IFilterTable[] = [
     { id: 'searchTerm', title: 'Поиск по тексту', type: 'STRING', placeholder: 'Имя, email...' },
     { id: 'count', title: 'Количество сотр.', type: 'NUMBER', placeholder: 'Кол. сотр.' },
     { id: 'isActive', title: 'Активный', type: 'BOOLEAN' },
+    { id: 'createdDate', title: 'Дата создание', type: 'DATE' },
     {
         id: 'roleId',
         title: 'Роль сотрудника',
@@ -75,5 +76,15 @@ export const UserFilterConfig: IFilterTable[] = [
         bindLabel: 'name',
         bindValue: 'id',
         placeholder: 'Нажмите для выбора роли...'
+    },
+    {
+        id: 'productType',
+        title: 'Вид товара',
+        type: 'SELECT',
+        options: [
+            { value: 'PRODUCT', label: 'Товар' },
+            { value: 'SERVICE', label: 'Услуга' },
+            { value: 'WORK', label: 'Работа' }
+        ]
     },
 ]

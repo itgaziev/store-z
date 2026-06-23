@@ -95,7 +95,7 @@ export default function DemoPage() {
                 </div>
 
                 {/* ПРАВАЯ ПАНЕЛЬ (Содержимое 2) */}
-                <div className="w-80 shrink-0 bg-white border border-gray-200 p-4">
+                <div className="w-100 shrink-0 bg-white border border-gray-200 p-4">
                     <TableSidebar hasTree={true} />
                 </div>
             </div>

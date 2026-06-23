@@ -8,29 +8,37 @@ export interface INumberFilterValue {
     valueTo?: string;
 }
 
-interface FilterNumberFieldProps {
+interface FilterNumberProps {
     value: INumberFilterValue | undefined;
     onChange: (value: INumberFilterValue | undefined) => void;
     placeholder?: string;
 }
 
-export const FilterNumberField = ({ value, onChange, placeholder }: FilterNumberFieldProps) => {
+export const FilterNumber = ({ value, onChange, placeholder }: FilterNumberProps) => {
     const currentOperator = value?.operator || 'equal';
     const currentValue = value?.value || '';
     const currentValueTo = value?.valueTo || '';
 
-    const updateFilter = (operator: NumberOperator, val: string, valTo?: string) => {
-        if (!val && !valTo && operator === currentOperator) {
+    const updateFilterValue = (val: string, valTo?: string) => {
+        if (!val && !valTo) {
             onChange(undefined);
             return;
         }
 
         onChange({
-            operator,
+            operator: currentOperator,
             value: val,
-            ...(operator === 'between' ? { valueTo: valTo || '' } : {})
+            ...(currentOperator === 'between' ? { valueTo: valTo || '' } : {})
         });
     };
+
+    const updateFilterOperator = (nextOp: NumberOperator) => {
+        onChange({
+            operator: nextOp,
+            value: currentValue,
+            ...(nextOp === 'between' ? { valueTo: currentValueTo || '' } : {})
+        })
+    }
 
     return (
         <div className="space-y-1.5 w-full">
@@ -38,7 +46,7 @@ export const FilterNumberField = ({ value, onChange, placeholder }: FilterNumber
                 value={currentOperator}
                 onChange={e => {
                     const nextOp = e.target.value as NumberOperator;
-                    updateFilter(nextOp, currentValue, nextOp === 'between' ? currentValueTo : undefined);
+                    updateFilterOperator(nextOp);
                 }}
                 className="w-full text-xs border border-gray-300 rounded px-2 py-1.5 outline-none focus:ring-1 focus:ring-blue-500 bg-white"
             >
@@ -55,7 +63,7 @@ export const FilterNumberField = ({ value, onChange, placeholder }: FilterNumber
                             type="number"
                             placeholder="От"
                             value={currentValue}
-                            onChange={(e) => updateFilter(currentOperator, e.target.value, currentValueTo)}
+                            onChange={(e) => updateFilterValue( e.target.value, currentValueTo)}
                             className="w-full text-xs border border-gray-300 rounded px-2 py-1.5 outline-none focus:ring-1 focus:ring-blue-500"
                         />
                         <span className="text-gray-400 text-xs">—</span>
@@ -63,7 +71,7 @@ export const FilterNumberField = ({ value, onChange, placeholder }: FilterNumber
                             type="number"
                             placeholder="До"
                             value={currentValueTo}
-                            onChange={(e) => updateFilter(currentOperator, currentValue, e.target.value)}
+                            onChange={(e) => updateFilterValue(currentValue, e.target.value)}
                             className="w-full text-xs border border-gray-300 rounded px-2 py-1.5 outline-none focus:ring-1 focus:ring-blue-500"
                         />
                     </>
@@ -72,7 +80,7 @@ export const FilterNumberField = ({ value, onChange, placeholder }: FilterNumber
                         type="number"
                         placeholder={placeholder || 'Введите число ...'}
                         value={currentValue}
-                        onChange={e => updateFilter(currentOperator, e.target.value)}
+                        onChange={e => updateFilterValue(e.target.value)}
                         className="w-full text-xs border border-gray-300 rounded px-2 py-1.5 outline-none focus:ring-1 focus:ring-blue-500"
                     />
                 )}
