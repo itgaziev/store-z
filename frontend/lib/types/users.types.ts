@@ -65,7 +65,8 @@ export const UserColumns: IUserColumn[] = [
 
 export const UserFilterConfig: IFilterTable[] = [
     { id: 'searchTerm', title: 'Поиск по тексту', type: 'STRING', placeholder: 'Имя, email...' },
-    { id: 'isActive', title: 'Только активные сотрудники', type: 'CHECKBOX' },
+    { id: 'count', title: 'Количество сотр.', type: 'NUMBER', placeholder: 'Кол. сотр.' },
+    { id: 'isActive', title: 'Активный', type: 'BOOLEAN' },
     {
         id: 'roleId',
         title: 'Роль сотрудника',

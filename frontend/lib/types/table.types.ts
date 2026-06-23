@@ -26,7 +26,7 @@ export interface IFilterTableOption {
 export interface IFilterTable {
     id: string;
     title: string;
-    type: 'STRING' | 'SELECT' | 'CHECKBOX' | 'MODAL';
+    type: 'STRING' | 'SELECT' | 'CHECKBOX' | 'MODAL' | 'BOOLEAN' | 'NUMBER';
     endpoint?: string; // Для SELECT и MODAL, откуда качать данные
     
     // Новые полезные поля:

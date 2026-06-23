@@ -4,7 +4,8 @@ import { axiosWithAuth } from "@/lib/api/interceptors";
 import { IFilterTable, IFilterTableOption } from "@/lib/types/table.types"
 import { cn } from "@/lib/utils";
 import { LoaderPinwheel, Search } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { FilterNumberField } from "../filter/FilterNumber";
 
 interface FilterFieldProps {
     filter: IFilterTable;
@@ -18,49 +19,46 @@ export const FilterField = ({ filter, value, onChange }: FilterFieldProps) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchModalTerm, setSearchModalTerm] = useState('');
 
-    const openModalAndFetch = async () => {
-        setIsModalOpen(true);
-
-        if (options.length > 0 || !filter.endpoint) return;
-
+    const loadFilterOptions = useCallback(async () => {
+        if (!filter.endpoint) return;
         setLoading(true);
-
         try {
-            const response = await axiosWithAuth.get(filter.endpoint);
+            const response = await axiosWithAuth.get(filter.endpoint!);
             const items = Array.isArray(response.data) ? response.data : response.data.data || [];
-            setOptions(items.map((item: any) => ({
+            const mappedOptions = items.map((item: any) => ({
                 value: item[filter.bindValue || 'id'],
                 label: item[filter.bindLabel || 'name']
-            })));
+            }))
+            setOptions(mappedOptions);
         } catch (e) {
-            console.error(e);
+            console.error('Error loaded filter: ', e);
         } finally {
             setLoading(false);
         }
-    };
+    }, [filter.endpoint, filter.bindValue, filter.bindLabel]);
+
+    const openModalAndFetch = async () => {
+        setIsModalOpen(true);
+        if (options.length === 0) {
+            await loadFilterOptions();
+        }
+    }
 
     useEffect(() => {
-        if (!filter.endpoint) return;
-
         if (filter.type === 'SELECT') {
-            const fetchData = async () => {
-                setLoading(true);
-                try {
-                    const response = await axiosWithAuth.get(filter.endpoint!);
-                    const items = Array.isArray(response.data) ? response.data : response.data.data || [];
-                    const mappedOptions = items.map((item: any) => ({
-                        value: item[filter.bindValue || 'id'],
-                        label: item[filter.bindLabel || 'name']
-                    }))
-                } catch (e) {
-                    console.error('Error loaded filter: ', e);
-                } finally {
-                    setLoading(false);
-                }
-            };
-            fetchData();
+            loadFilterOptions();
         }
-    }, [filter])
+    }, [filter.type, loadFilterOptions])
+
+    if (filter.type === 'NUMBER') {
+        return (
+            <FilterNumberField 
+                value={value}
+                onChange={onChange}
+                placeholder={filter.placeholder}
+            />
+        )
+    }
 
     if (filter.type === 'STRING') {
         return (
@@ -86,6 +84,21 @@ export const FilterField = ({ filter, value, onChange }: FilterFieldProps) => {
                 {options.map(opt => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                 ))}
+            </select>
+        )
+    }
+
+    if (filter.type === 'BOOLEAN') {
+        return (
+            <select
+                value={value || ''}
+                onChange={(e) => onChange(e.target.value)}
+                disabled={loading}
+                className="w-full text-xs border border-gray-300 rounded px-2 py-1.5 outline-none focus:ring-blue-500 bg-white"
+            >
+                <option value="">Все</option>
+                <option value="Y">Да</option>
+                <option value="N">Нет</option>
             </select>
         )
     }
@@ -136,14 +149,14 @@ export const FilterField = ({ filter, value, onChange }: FilterFieldProps) => {
                                                     onChange(opt.value);
                                                     setIsModalOpen(false);
                                                 }}
-                                                className={ cn(
+                                                className={cn(
                                                     'p-2 text-xs rounded cursor-pointer transition-colors',
                                                     value === opt.value ?
                                                         'bg-blue-100 text-blue-700 font-medium'
                                                         : 'hover:bg-gray-50 text-gray-700'
                                                 )}
                                             >
-                                                { opt.label }
+                                                {opt.label}
                                             </div>
                                         ))
                                 )}
