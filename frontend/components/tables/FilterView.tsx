@@ -28,7 +28,7 @@ export const FilterView = ({ config }: FilterViewProps) => {
 
     return (
         <div className="flex flex-col h-full">
-            <div className="flex-1 space-y-4 pb-4 overflow-y-auto custom-scrollbar p-1">
+            <div className="flex-1 space-y-2 pb-4 overflow-y-auto custom-scrollbar p-1">
                 {config.map((filter) => (
                     <div key={filter.id} className="space-y-1.5">
                         {filter.type !== 'CHECKBOX' && (

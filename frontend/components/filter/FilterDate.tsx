@@ -63,37 +63,31 @@ export const FilterDate = ({ value, onChange }: FilterDateProps) => {
                 <option value="between">В интервале (от ... до)</option>
             </select>
 
-            <div className="flex flex-col gap-2">
+            <div className="flex items-center flex-col gap-2">
                 {currentOperator === 'between' ? (
                     <>
-                        {/* Поле "От" */}
-                        <div className="flex items-center gap-2">
-                            <span className="text-[10px] text-gray-400 w-5 text-right shrink-0">От</span>
-                            <input
-                                type="datetime-local"
-                                step="1"
-                                value={currentValue}
-                                max={currentValueTo || undefined}
-                                onChange={(e) => updateFilterValue(e.target.value, currentValueTo)}
-                                className="w-full text-xs border border-gray-300 rounded px-2 py-1.5 outline-none focus:ring-1 focus:ring-blue-500 bg-white"
-                            />
-                        </div>
+                        <input
+                            type="datetime-local"
+                            step="1"
+                            value={currentValue}
+                            max={currentValueTo || undefined}
+                            onChange={(e) => updateFilterValue(e.target.value, currentValueTo)}
+                            className="w-full text-xs border border-gray-300 rounded px-2 py-1.5 outline-none focus:ring-1 focus:ring-blue-500"
+                        />
 
-                        {/* Поле "До" */}
-                        <div className="flex items-center gap-2">
-                            <span className="text-[10px] text-gray-400 w-5 text-right shrink-0">До</span>
-                            <input
-                                type="datetime-local"
-                                step="1"
-                                value={currentValueTo}
-                                min={currentValue || undefined}
-                                onChange={(e) => updateFilterValue(currentValue, e.target.value)}
-                                className="w-full text-xs border border-gray-300 rounded px-2 py-1.5 outline-none focus:ring-1 focus:ring-blue-500 bg-white"
-                            />
-                        </div>
+                        {/* <span className="text-gray-400 text-xs">—</span> */}
+                        <input
+                            type="datetime-local"
+                            step="1"
+                            value={currentValueTo}
+                            min={currentValue || undefined}
+                            onChange={(e) => updateFilterValue(currentValue, e.target.value)}
+                            className="w-full text-xs border border-gray-300 rounded px-2 py-1.5 outline-none focus:ring-1 focus:ring-blue-500"
+                        />
                     </>
+
                 ) : (
-                    <div className="flex items-center gap-2">
+                    <div className="flex w-full items-center gap-2">
                         <input
                             type="datetime-local"
                             step="1"
