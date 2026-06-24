@@ -1,14 +1,14 @@
 'use client'
 
-import { axiosWithAuth } from "@/lib/api/interceptors";
-import { IFilterTable, IFilterTableOption } from "@/lib/types/table.types"
-import { useCallback, useState } from "react";
+import { IFilterTable } from "@/lib/types/table.types"
+import { useState } from "react";
 import { FilterNumber } from "../filter/FilterNumber";
 import { FilterString } from "../filter/FilterString";
 import { FilterDate } from "../filter/FilterDate";
 import { FilterSelect } from "../filter/FilterSelect";
 import { FilterBoolean } from "../filter/FilterBoolean";
 import { FilterModal } from "../filter/FilterModal";
+import { useInfiniteFilterOptions } from "@/lib/hooks/useInfiniteFilterOptions";
 
 interface FilterFieldProps {
     filter: IFilterTable;
@@ -17,34 +17,24 @@ interface FilterFieldProps {
 }
 
 export const FilterField = ({ filter, value, onChange }: FilterFieldProps) => {
-    const [options, setOptions] = useState<IFilterTableOption[]>([]);
-    const [loading, setLoading] = useState(false);
+    // Контролируем открытость модального окна здесь,
+    // чтобы передать флаг `enabled` в хук — тот не делает запросов пока окно закрыто
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
-    // Функция загрузки данных вызывается ТЕПЕРЬ СТРОГО для типа MODAL
-    const loadFilterOptions = useCallback(async () => {
-        if (!filter.endpoint) return;
-        setLoading(true);
-        try {
-            const response = await axiosWithAuth.get(filter.endpoint);
-            const items = Array.isArray(response.data) ? response.data : response.data.data || [];
-            const mappedOptions = items.map((item: any) => ({
-                value: item[filter.bindValue || 'id'],
-                label: item[filter.bindLabel || 'name']
-            }));
-            setOptions(mappedOptions);
-        } catch (e) {
-            console.error('Error loading filter options: ', e);
-        } finally {
-            setLoading(false);
-        }
-    }, [filter.endpoint, filter.bindValue, filter.bindLabel]);
-
-    // Ленивая загрузка для модального окна (только когда кликнули)
-    const handleModalOpen = () => {
-        if (options.length === 0) {
-            loadFilterOptions();
-        }
-    };
+    const {
+        options,
+        loading,
+        loadingMore,
+        hasMore,
+        searchTerm,
+        setSearchTerm,
+        loadMore,
+    } = useInfiniteFilterOptions({
+        endpoint: filter.type === 'MODAL' ? filter.endpoint : undefined,
+        bindLabel: filter.bindLabel,
+        bindValue: filter.bindValue,
+        enabled: isModalOpen,
+    });
 
     switch (filter.type) {
         case 'NUMBER':
@@ -70,9 +60,15 @@ export const FilterField = ({ filter, value, onChange }: FilterFieldProps) => {
                     value={value}
                     onChange={onChange}
                     placeholder={filter.placeholder}
-                    options={options} // Сюда идут опции из стейта, загруженные по сети
+                    options={options}
                     loading={loading}
-                    onOpen={handleModalOpen}
+                    loadingMore={loadingMore}
+                    hasMore={hasMore}
+                    searchTerm={searchTerm}
+                    onSearchChange={setSearchTerm}
+                    onLoadMore={loadMore}
+                    isOpen={isModalOpen}
+                    onOpenChange={setIsModalOpen}
                 />
             );
 

@@ -72,8 +72,8 @@ export const UserFilterConfig: IFilterTable[] = [
         id: 'roleId',
         title: 'Роль сотрудника',
         type: 'MODAL',
-        endpoint: '/users/roles',
-        bindLabel: 'name',
+        endpoint: '/users',
+        bindLabel: 'firstName',
         bindValue: 'id',
         placeholder: 'Нажмите для выбора роли...'
     },

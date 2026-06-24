@@ -73,8 +73,28 @@ export class UsersService {
         return { data, total, page, limit }
     }
 
-    async getRoles(): Promise<Role[]> {
-        return await this.rolesRepository.find();
+    async getRoles(
+        page: number = 1,
+        limit: number = 10,
+        sortBy: string = 'createdAt',
+        order: 'ASC' | 'DESC' = 'DESC',
+        searchTerm: string = '',
+    ): Promise<{ data: Role[]; total: number; page: number; limit: number }> {
+        const [data, total] = await this.rolesRepository.findAndCount({
+            skip: (page - 1) * limit,
+            take: limit,
+            withDeleted: true,
+            order: {
+                [sortBy]: order
+            },
+            where: searchTerm
+                ? [
+                    { name: ILike(`%${searchTerm}%`) }
+                ]
+                : {}
+        });
+
+        return { data, total, page, limit }
     }
 
     async findOne(id: string): Promise<User> {
