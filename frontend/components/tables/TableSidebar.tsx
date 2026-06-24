@@ -2,107 +2,105 @@
 
 import { useState } from 'react';
 import { cn } from '@/lib/utils';
-import { 
-    ChevronRight, ChevronDown, Folder, FolderOpen, 
-    Filter as FilterIcon, Network, Search, X, RotateCcw, 
-    CirclePlus,
-    CircleMinus,
-    Circle
-} from 'lucide-react';
+import { Filter as FilterIcon, Network } from 'lucide-react';
 import { FilterView } from './FilterView';
-import { UserFilterConfig } from '@/lib/types/users.types';
+import { TreeView } from './TreeView';
+import { IFilterTable } from '@/lib/types/table.types';
+import { TreeNodeData } from '@/lib/types/inerfaces';
+
+// ─── Типы ────────────────────────────────────────────────────────────────────
 
 type TabType = 'filter' | 'tree';
 
-export const TableSidebar = ({ hasTree = true }: { hasTree?: boolean }) => {
-    const [activeTab, setActiveTab] = useState<TabType>(hasTree ? 'tree' : 'filter');
+interface ITableSidebarProps {
+    /** Данные древа. Если не переданы — вкладка «Древо» не отображается */
+    treeData?: TreeNodeData[];
+    filterConfig?: IFilterTable[];
+    onFilter?: (filter: IFilterTable[], reset?: boolean) => void;
+}
+
+// ─── Главный компонент ────────────────────────────────────────────────────────
+
+export const TableSidebar = ({ treeData, filterConfig, onFilter }: ITableSidebarProps) => {
+    const hasTree = Boolean(treeData?.length);
+    const hasFilter = Boolean(filterConfig?.length);
+
+    // Выбираем начальную вкладку: tree → если есть, иначе filter
+    const defaultTab: TabType = hasTree ? 'tree' : 'filter';
+    const [activeTab, setActiveTab] = useState<TabType>(defaultTab);
+
+    // Если нет ни дерева, ни фильтра — не рендерим компонент
+    if (!hasTree && !hasFilter) return null;
 
     return (
         <div className="flex flex-col h-full bg-white">
-            {/* Вкладки сверху */}
-            <div className="flex border-b border-gray-200 bg-gray-50/50">
-                {hasTree && (
-                    <button
+
+            {/* Переключатель вкладок — только если доступны обе */}
+            {hasTree && hasFilter && (
+                <div className="flex border-b border-gray-200 bg-gray-50/50 shrink-0">
+                    <SidebarTab
+                        label="Древо"
+                        icon={<Network className="w-4 h-4" />}
+                        isActive={activeTab === 'tree'}
                         onClick={() => setActiveTab('tree')}
-                        className={cn(
-                            "flex-1 flex items-center justify-center gap-2 py-3 text-xs font-medium border-b-2 transition-colors",
-                            activeTab === 'tree' ? "border-blue-500 text-blue-600 bg-white" : "border-transparent text-gray-500 hover:text-gray-700"
-                        )}
-                    >
-                        <Network className="w-4 h-4" />
-                        Древо
-                    </button>
-                )}
-                <button
-                    onClick={() => setActiveTab('filter')}
-                    className={cn(
-                        "flex-1 flex items-center justify-center gap-2 py-3 text-xs font-medium border-b-2 transition-colors",
-                        activeTab === 'filter' ? "border-blue-500 text-blue-600 bg-white" : "border-transparent text-gray-500 hover:text-gray-700"
-                    )}
-                >
-                    <FilterIcon className="w-4 h-4" />
-                    Фильтр
-                </button>
-            </div>
-
-            {/* Контентная часть со своим скроллом */}
-            <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
-                {activeTab === 'tree' && <TreeView />}
-                {activeTab === 'filter' && <FilterView config={UserFilterConfig}/>}
-            </div>
-        </div>
-    );
-};
-
-// --- Вспомогательный компонент: Древо категорий ---
-const TreeView = () => {
-    // Демо-данные для древа
-    const treeData = [
-        { id: '1', title: 'НОМЕНКЛАТУРА', children: [
-            { id: '1.1', title: 'АВТО И ВЕЛОСИПЕД', children: [] },
-            { id: '1.2', title: 'В НАЛИЧИИ', children: [
-                { id: '1.2.1', title: 'Аксессуары' },
-                { id: '1.2.2', title: 'Бытовая химия' },
-            ]},
-        ]},
-        { id: '2', title: 'ИНСТРУМЕНТ', children: [] },
-    ];
-
-    return (
-        <div className="space-y-1">
-            {treeData.map(node => <TreeNode key={node.id} node={node} depth={0} />)}
-        </div>
-    );
-};
-
-const TreeNode = ({ node, depth }: { node: any, depth: number }) => {
-    const [isOpen, setIsOpen] = useState(depth === 0); // Открываем первый уровень
-    const hasChildren = node.children && node.children.length > 0;
-
-    return (
-        <div>
-            <div 
-                className="flex items-center gap-1 py-1 px-2 hover:bg-blue-50 cursor-pointer rounded transition-colors group"
-                onClick={() => setIsOpen(!isOpen)}
-                style={{ paddingLeft: `${depth * 12 + 12}px` }}
-            >
-                {hasChildren ? (
-                    isOpen ? <CircleMinus className="w-3 h-3 text-gray-400" /> : <CirclePlus className="w-3 h-3 text-gray-400" />
-                ) : <Circle className="w-3 h-3 text-gray-400" />}
-                
-                {hasChildren ? (
-                    isOpen ? <FolderOpen className="w-4 h-4 text-yellow-500" /> : <Folder className="w-4 h-4 text-yellow-500" />
-                ) : <Folder className="w-4 h-4 text-yellow-500" />}
-                
-                <span className="text-xs text-gray-700 truncate">{node.title}</span>
-            </div>
-            {hasChildren && isOpen && (
-                <div>
-                    {node.children.map((child: any) => (
-                        <TreeNode key={child.id} node={child} depth={depth + 1} />
-                    ))}
+                    />
+                    <SidebarTab
+                        label="Фильтр"
+                        icon={<FilterIcon className="w-4 h-4" />}
+                        isActive={activeTab === 'filter'}
+                        onClick={() => setActiveTab('filter')}
+                    />
                 </div>
             )}
+
+            {/* Статичный заголовок — если доступна только одна вкладка */}
+            {hasTree && !hasFilter && (
+                <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-200 bg-gray-50/50 shrink-0">
+                    <Network className="w-4 h-4 text-gray-500" />
+                    <span className="text-xs font-medium text-gray-600">Древо</span>
+                </div>
+            )}
+            {!hasTree && hasFilter && (
+                <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-200 bg-gray-50/50 shrink-0">
+                    <FilterIcon className="w-4 h-4 text-gray-500" />
+                    <span className="text-xs font-medium text-gray-600">Фильтр</span>
+                </div>
+            )}
+
+            {/* Контент */}
+            <div className="flex-1 overflow-y-auto custom-scrollbar p-4">
+                {activeTab === 'tree' && hasTree && (
+                    <TreeView data={treeData!} />
+                )}
+                {activeTab === 'filter' && hasFilter && (
+                    <FilterView config={filterConfig} onFilter={onFilter} />
+                )}
+            </div>
         </div>
     );
 };
+
+// ─── Атомарный компонент вкладки ──────────────────────────────────────────────
+
+interface SidebarTabProps {
+    label: string;
+    icon: React.ReactNode;
+    isActive: boolean;
+    onClick: () => void;
+}
+
+const SidebarTab = ({ label, icon, isActive, onClick }: SidebarTabProps) => (
+    <button
+        onClick={onClick}
+        className={cn(
+            'flex-1 flex items-center justify-center gap-2 py-3',
+            'text-xs font-medium border-b-2 transition-colors',
+            isActive
+                ? 'border-blue-500 text-blue-600 bg-white'
+                : 'border-transparent text-gray-500 hover:text-gray-700',
+        )}
+    >
+        {icon}
+        {label}
+    </button>
+);

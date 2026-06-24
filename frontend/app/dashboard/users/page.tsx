@@ -1,76 +1,112 @@
 'use client';
-
 import { Heading } from "@/components/layout/Heading";
-import { SearchTable } from "@/components/tables/SearchTable";
+import { TableSidebar } from "@/components/tables/TableSidebar";
+import { StoreTable } from "@/components/tables/StoreTable";
 import { userService } from "@/lib/services/users.services";
 import { IPaginatedResponse } from "@/lib/types/paginates.types";
-import { IUserResponse } from "@/lib/types/users.types";
-import { useInfiniteQuery } from "@tanstack/react-query";
-import { Table } from "@/components/tables/Table";
-import { useState } from "react";
 import { SortDirection } from "@/lib/types/table.types";
-
-const columns: { key: string; label: string; isSortable?: boolean }[] = [
-    { key: 'email', label: 'Email', isSortable: true },
-    { key: 'firstName', label: 'Имя', isSortable: true },
-    { key: 'lastName', label: 'Фамилия', isSortable: true },
-];
+import { IUserColumn, IUserTableRow, UserColumns } from "@/lib/types/users.types";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { SearchIcon } from "lucide-react";
+import { useState } from "react";
+import { TreeNodeData } from "@/lib/types/inerfaces";
+import { DEMO_TREE } from "@/data/demo";
 
 
 export default function UsersPage() {
+    const [columns] = useState<IUserColumn[]>(UserColumns);
+    const [treeData] = useState<TreeNodeData[]>(DEMO_TREE);
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortBy, setSortBy] = useState<string>('email');
+    const [sortBy, setSortBy] = useState<string>('id');
     const [sortDirection, setSortDirection] = useState<SortDirection>('DESC');
 
     const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage, status } = useInfiniteQuery({
         queryKey: ['users', searchTerm, sortBy, sortDirection],
-        queryFn: async ({ pageParam = 1}) => userService.getAll(pageParam, 10, sortBy, sortDirection, searchTerm),
-        getNextPageParam: (lastPage: IPaginatedResponse<IUserResponse>) => {
+        queryFn: async ({ pageParam = 1 }) => userService.getAllRow(pageParam, 10, sortBy, sortDirection, searchTerm),
+        getNextPageParam: (lastPage: IPaginatedResponse<IUserTableRow>) => {
             const { page, total, limit } = lastPage;
             return page < Math.ceil(total / limit) ? page + 1 : undefined;
-        }, 
+        },
         initialPageParam: 1,
     });
 
     const flatUsers = data?.pages.flatMap(page => page.data) || [];
 
-    const handleSearch = (value: string) => {
-        setSearchTerm(value);
-    };
+    const onSelectRow = (indexs: number[]) => {
+        flatUsers.map((row: Record<string, any>, i: number) => {
+            if (indexs.includes(i)) {
+                console.log(row);
+            }
+        })
+    }
 
-    const handleSort = (key: string, direction: SortDirection) => {
-        setSortBy(key);
+    const handleSort = (id: string, direction: SortDirection) => {
+        setSortBy(id);
         setSortDirection(direction);
     }
 
-    const selectItemHandler = (item: IUserResponse) => {
-        console.log('Selected item: ', item);
+    const handleSearch = (value: string) => {
+        setSearchTerm(value);
+    }
+
+    const onFilterByValue = (columnId: string, value: string) => {
+        console.log('Filter by value', columnId, value);
     }
 
     return (
-        <div className="h-[calc(100vh-8rem)] flex flex-col">
-            <Heading title="Пользователи" description="Управление пользователями вашего магазина" />
-            { /* Main content goes here */ }
-            <div className="flex flex-col lg:flex-row gap-6 flex-1 min-h-0">
-                <div className="flex-1 flex flex-col min-h-0">
-                    <div className="bg-white border border-gray-200 rounded-lg p-4 shrink-0">
-                        <SearchTable onSearch={handleSearch} />
+        <div className="h-[calc(100vh-8rem)] flex flex-col overflow-x-hidden">
+            <Heading title="Пользователи" description="Здесь вы можете управлять пользователями вашего магазина." />
+            { /* Main content goes here */}
+            <div className="flex items-center justify-between gap-4 mb-4 bg-white border border-gray-200 p-2 rounded-lg">
+                { /* Action buttons go here */}
+                <div className="flex flex-2 items-center gap-4">
+                    <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
+                        Действие 1
+                    </button>
+                    <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                        Действие 2
+                    </button>
+                </div>
+                <div className="relative w-full flex-1">
+                    <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                        type="text"
+                        placeholder="Поиск ..."
+                        value={searchTerm}
+                        onChange={(e) => handleSearch(e.target.value)}
+                        className="w-full pl-10 pr-4 py-2.5 border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                    />
+                </div>
+            </div>
+            <div className="flex flex-col lg:flex-row flex-1 min-h-0 gap-1 w-full max-w-full">
+                <div className="flex-1 min-w-0 bg-white border border-gray-200 flex flex-col overflow-hidden w-full">
+                    <div className="overflow-x-auto w-full custom-scrollbar">
+                        <StoreTable
+                            isMulti={true}
+                            rows={flatUsers}
+                            columns={columns}
+                            onSelect={onSelectRow}
+
+                            // Infinity scroll
+                            hasNextPage={hasNextPage}
+                            isFetchingNextPage={isFetchingNextPage}
+                            status={status}
+                            fetchNextPage={fetchNextPage}
+
+                            //Sortable
+                            sortBy={sortBy}
+                            sortDirection={sortDirection}
+                            onSort={handleSort}
+
+                            //Filter
+                            onFilterByValue={onFilterByValue}
+                        />
                     </div>
-                    <div className="bg-white border border-gray-200 rounded-lg mt-3 overflow-hidden flex-1 min-h-0 flex flex-col">
-                        <div className="overflow-auto flex-1 custom-scrollbar">
-                            <Table
-                                columns={columns}
-                                data={flatUsers}
-                                isLoading={isLoading}
-                                hasMore={hasNextPage}
-                                onLoadMore={fetchNextPage}
-                                sortBy={sortBy}
-                                sortDirection={sortDirection}
-                                onSort={handleSort}
-                                selectItemAction={selectItemHandler}
-                            />
-                        </div>
-                    </div>
+                </div>
+
+                {/* ПРАВАЯ ПАНЕЛЬ */}
+                <div className="w-100 shrink-0 bg-white border border-gray-200 p-4">
+                    <TableSidebar treeData={treeData} />
                 </div>
             </div>
         </div>

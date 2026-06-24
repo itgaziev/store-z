@@ -5,11 +5,13 @@ import { useState } from "react";
 import { FilterField } from "./FilterField";
 
 interface FilterViewProps {
-    config: IFilterTable[];
+    config?: IFilterTable[];
+    filterValues?: Record<string, any>;
+    onFilter?: (filter: IFilterTable[], reset?: boolean) => void;
 }
 
-export const FilterView = ({ config }: FilterViewProps) => {
-    const [filterValues, setFilterValues] = useState<Record<string, any>>({})
+export const FilterView = ({ config, filterValues: defaultFilterValues = {}, onFilter }: FilterViewProps) => {
+    const [filterValues, setFilterValues] = useState<Record<string, any>>(defaultFilterValues)
 
     const handleFilterChange = (id: string, value: any) => {
         setFilterValues(prev => ({
@@ -19,17 +21,22 @@ export const FilterView = ({ config }: FilterViewProps) => {
     }
 
     const applyFilters = () => {
-        console.log('Send filter data on server', filterValues);
+        if (onFilter) {
+            onFilter(config || [], false);
+        }
     }
 
     const resetFilters = () => {
         setFilterValues({})
+        if (onFilter) {
+            onFilter([], true);
+        }
     }
 
     return (
         <div className="flex flex-col h-full">
             <div className="flex-1 space-y-2 pb-4 overflow-y-auto custom-scrollbar p-1">
-                {config.map((filter) => (
+                {config?.map((filter) => (
                     <div key={filter.id} className="space-y-1.5">
                         {filter.type !== 'CHECKBOX' && (
                             <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">

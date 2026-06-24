@@ -4,6 +4,8 @@ import { Column, SortDirection, TableData } from "@/lib/types/table.types";
 import { cn } from "@/lib/utils";
 import { ArrowDownAZ, ArrowUpAZ, LoaderPinwheel, RefreshCw } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useContextMenu } from "@/lib/hooks/useContextMenu";
+import { ContextMenu } from "./ContextMenu";
 type StoreTableProps = {
     isMulti: boolean;
     columns: Column[];
@@ -20,17 +22,24 @@ type StoreTableProps = {
     sortBy?: string;
     sortDirection?: SortDirection;
     onSort?: (key: string, direction: SortDirection) => void;
+
+    // Context menu
+    /** Вызывается когда пользователь выбрал «Отфильтровать по этому значению» */
+    onFilterByValue?: (columnId: string, value: any) => void;
 }
 
 export const StoreTable = (props: StoreTableProps) => {
     const { columns, rows, onSelect } = props;
     const { hasNextPage, isFetchingNextPage, status, fetchNextPage } = props;
+    const { onFilterByValue } = props;
 
     const [selectedItems, setSelectedItems] = useState<number[]>([]);
     const [lastSelectedId, setLastSelectedId] = useState<number | null>(null);
-    
+
     const { sortBy, sortDirection : initialSortDirection, onSort } = props;
-    const [sortDirection, setSortDirection] = useState<SortDirection>(initialSortDirection || 'DESC')
+    const [sortDirection, setSortDirection] = useState<SortDirection>(initialSortDirection || 'DESC');
+
+    const { menuState, menuRef, handleContextMenu, closeMenu } = useContextMenu();
 
     const isMac = typeof window !== 'undefined' && navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 
@@ -161,6 +170,7 @@ export const StoreTable = (props: StoreTableProps) => {
 
 
     return (
+        <>
         <table className="min-w-full table-fixed select-none divide-y divide-gray-200">
             <thead className="bg-gray-50 border-b border-gray-200 sticky top-0 z-10">
                 <tr>
@@ -215,6 +225,7 @@ export const StoreTable = (props: StoreTableProps) => {
                                             key={col.id}
                                             className="px-4 py-3 text-xs text-gray-900 whitespace-nowrap truncate"
                                             style={{ width: col.width == 'auto' ? 'auto' : `${col.width}px` }}
+                                            onContextMenu={(e) => handleContextMenu(e, col.id, row[col.id])}
                                         >
                                             {row[col.id]}
                                         </td>
@@ -237,5 +248,15 @@ export const StoreTable = (props: StoreTableProps) => {
                 </tfoot>
             )}
         </table>
+
+        <ContextMenu
+            state={menuState}
+            menuRef={menuRef}
+            onClose={closeMenu}
+            onFilterByValue={(columnId, value) => {
+                if (onFilterByValue) onFilterByValue(columnId, value);
+            }}
+        />
+        </>
     );
 }
