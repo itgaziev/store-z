@@ -53,11 +53,12 @@ export async function install(dataSource: DataSource) {
         const password = `test${i}pass`;
         const firstName = `Test${i}`;
         const lastName = `Lastname${i}`;
+        const hashedPassword = await bcrypt.hash(password, 10);
         const userNew: any = {
             firstName: firstName,
             lastName: lastName,
             email: email,
-            password: password,
+            password: hashedPassword,
             role: baseRole
         }
         const user = userRepository.create(userNew);

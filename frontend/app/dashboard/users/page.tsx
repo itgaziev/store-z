@@ -24,8 +24,8 @@ export default function UsersPage() {
         queryKey: ['users', searchTerm, sortBy, sortDirection],
         queryFn: async ({ pageParam = 1 }) => userService.getAllRow(pageParam, 10, sortBy, sortDirection, searchTerm),
         getNextPageParam: (lastPage: IPaginatedResponse<IUserTableRow>) => {
-            const { page, total, limit } = lastPage;
-            return page < Math.ceil(total / limit) ? page + 1 : undefined;
+            const { page, pageCount } = lastPage.meta;
+            return page < pageCount ? page + 1 : undefined;
         },
         initialPageParam: 1,
     });

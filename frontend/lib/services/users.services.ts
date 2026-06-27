@@ -29,8 +29,8 @@ class UserService {
         }));
 
         return {
-            ...response.data,
-            data: transformedData
+            data: transformedData,
+            meta: response.data.meta,
         };
     }
 
