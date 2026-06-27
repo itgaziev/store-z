@@ -10,7 +10,6 @@
     "sourceMap": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "baseUrl": "./src",
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": false,
@@ -18,19 +17,41 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "ignoreDeprecations": "5.0",
     "paths": {
-      "@/*": ["./*"],
-      "@common/*": ["common/*"],
-      "@config/*": ["config/*"],
-      "@auth/*": ["auth/*"],
-      "@users/*": ["users/*"],
-      "@sections/*": ["sections/*"],
-      "@products/*": ["products/*"],
-      "@warehouses/*": ["warehouses/*"],
-      "@images/*": ["images/*"]
+      "@/*": [
+        "./src/*"
+      ],
+      "@common/*": [
+        "./src/common/*"
+      ],
+      "@config/*": [
+        "./src/config/*"
+      ],
+      "@auth/*": [
+        "./src/auth/*"
+      ],
+      "@users/*": [
+        "./src/users/*"
+      ],
+      "@sections/*": [
+        "./src/sections/*"
+      ],
+      "@products/*": [
+        "./src/products/*"
+      ],
+      "@warehouses/*": [
+        "./src/warehouses/*"
+      ],
+      "@images/*": [
+        "./src/images/*"
+      ]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist"]
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
 }

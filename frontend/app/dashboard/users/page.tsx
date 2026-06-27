@@ -5,7 +5,7 @@ import { StoreTable } from "@/components/tables/StoreTable";
 import { userService } from "@/lib/services/users.services";
 import { IPaginatedResponse } from "@/lib/types/paginates.types";
 import { SortDirection } from "@/lib/types/table.types";
-import { IUserColumn, IUserTableRow, UserColumns } from "@/lib/types/users.types";
+import { IUserColumn, IUserTableRow, UserColumns, UserFilterConfig } from "@/lib/types/users.types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { SearchIcon } from "lucide-react";
 import { useState } from "react";
@@ -106,7 +106,7 @@ export default function UsersPage() {
 
                 {/* ПРАВАЯ ПАНЕЛЬ */}
                 <div className="w-100 shrink-0 bg-white border border-gray-200 p-4">
-                    <TableSidebar treeData={treeData} />
+                    <TableSidebar treeData={treeData} filterConfig={UserFilterConfig} onFilter={(value) => console.log(value)} />
                 </div>
             </div>
         </div>

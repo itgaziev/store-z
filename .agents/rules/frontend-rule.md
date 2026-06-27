@@ -52,6 +52,19 @@ export const userService = new UserService();
 * Implement lazy loading and infinite scrolling, similar to how they are implemented in the main table (`StoreTable`).
 * Use debounce for search inputs to avoid flooding the backend with requests.
 
+## INTERACTION PROTOCOL (CRITICAL)
+
+It is prohibited to start writing code or creating files immediately after receiving a business requirement. Development of any feature must follow a strict two-step process:
+
+1. STEP 1: PLAN DECOMPOSITION AND APPROVAL
+* The agent must first propose a step-by-step implementation plan in the form of small, isolated tasks (checklist).
+* Each task must clearly describe which file is being changed, which features are being added, and how this relates to StoreZ architectural rules.
+* After generating the plan, the agent stops and waits for an explicit command from the user (e.g., "Plan approved, execute task 1").
+
+2. STEP 2: STEP-BY-STEP IMPLEMENTATION
+* The agent executes exactly ONE task at a time from the approved plan.
+* After completing a task, the agent demonstrates the changes and waits for approval before moving on to the next step.
+
 ---
 
 Before proposing a solution, always check your code for compliance with these 5 rules.

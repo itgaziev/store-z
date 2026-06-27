@@ -1,7 +1,7 @@
 import { JwtAuthGuard } from '@/common/guards/jwt-auth.guard';
 import { PermissionsGuard } from '@/common/guards/permissions.guard';
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { UsersService } from './users.service';
 import { Permissions } from '@/common/decorators/permissions.decorator';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -9,6 +9,7 @@ import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ModelNameEnum } from '@/common/enums/model-name.enum';
 import { AccessEnum } from '@/common/enums/access.enum';
+import { FindUsersQueryDto } from './dto/find-users-query.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -29,8 +30,9 @@ export class UsersController {
     @Permissions({ model: ModelNameEnum.USER, access: AccessEnum.READ })
     @ApiOperation({ summary: 'Get all users' })
     @ApiResponse({ status: 200, description: 'Return all users' })
-    findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10, @Query('sortBy') sortBy: string = 'createdAt', @Query('order') order: 'ASC' | 'DESC' = 'DESC', @Query('searchTerm') searchTerm: string = '') {
-        return this.usersService.findAll(+page, +limit, sortBy, order, searchTerm);
+    @ApiQuery({ name: 'filters', required: false, description: 'JSON-encoded filter object' })
+    findAll(@Query() query: FindUsersQueryDto) {
+        return this.usersService.findAll(query);
     }
 
     @Get('roles')

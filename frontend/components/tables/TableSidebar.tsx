@@ -16,7 +16,7 @@ interface ITableSidebarProps {
     /** Данные древа. Если не переданы — вкладка «Древо» не отображается */
     treeData?: TreeNodeData[];
     filterConfig?: IFilterTable[];
-    onFilter?: (filter: IFilterTable[], reset?: boolean) => void;
+    onFilter?: (value: Record<string, any>, reset?: boolean) => void;
 }
 
 // ─── Главный компонент ────────────────────────────────────────────────────────

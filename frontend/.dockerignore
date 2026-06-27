@@ -16,3 +16,4 @@ Dockerfile
 .idea
 coverage
 .nyc_output
+*.tsbuidinfo

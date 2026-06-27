@@ -7,7 +7,7 @@ import { FilterField } from "./FilterField";
 interface FilterViewProps {
     config?: IFilterTable[];
     filterValues?: Record<string, any>;
-    onFilter?: (filter: IFilterTable[], reset?: boolean) => void;
+    onFilter?: (value: Record<string, any>, reset?: boolean) => void;
 }
 
 export const FilterView = ({ config, filterValues: defaultFilterValues = {}, onFilter }: FilterViewProps) => {
@@ -22,7 +22,7 @@ export const FilterView = ({ config, filterValues: defaultFilterValues = {}, onF
 
     const applyFilters = () => {
         if (onFilter) {
-            onFilter(config || [], false);
+            onFilter(filterValues, false);
         }
     }
 

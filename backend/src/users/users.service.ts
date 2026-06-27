@@ -6,6 +6,8 @@ import { Role } from './entities/role.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import * as bcrypt from 'bcrypt'
 import { UpdateUserDto } from './dto/update-user.dto';
+import { FindUsersQueryDto } from './dto/find-users-query.dto';
+import { DateFilterDto, StringFilterDto, UserFilters } from './dto/filter-value.dto';
 
 @Injectable()
 export class UsersService {
@@ -47,30 +49,91 @@ export class UsersService {
     }
 
     async findAll(
-        page: number = 1,
-        limit: number = 10,
-        sortBy: string = 'createdAt',
-        order: 'ASC' | 'DESC' = 'DESC',
-        searchTerm: string = '',
-    ): Promise<{ data: User[]; total: number; page: number; limit: number }> {
-        const [data, total] = await this.usersRepository.findAndCount({
-            relations: ['role'],
-            skip: (page - 1) * limit,
-            take: limit,
-            withDeleted: true,
-            order: {
-                [sortBy]: order
-            },
-            where: searchTerm
-                ? [
-                    { email: ILike(`%${searchTerm}%`) },
-                    { firstName: ILike(`%${searchTerm}%`) },
-                    { lastName: ILike(`%${searchTerm}%`) }
-                ]
-                : {}
-        });
+        query: FindUsersQueryDto,
+    ): Promise<{ data: User[]; meta: { total: number; page: number; limit: number; pageCount: number } }> {
+        const { page = 1, limit = 10, sortBy = 'createdAt', order = 'DESC', filters, searchTerm } = query;
 
-        return { data, total, page, limit }
+        // --- Parse filters ---
+        let parsedFilters: UserFilters = {};
+        if (filters) {
+            try {
+                parsedFilters = JSON.parse(filters) as UserFilters;
+            } catch {
+                throw new BadRequestException('Invalid JSON in filters parameter');
+            }
+        }
+
+        // --- Build query ---
+        const qb = this.usersRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.role', 'role')
+            .withDeleted()
+            .skip((page - 1) * limit)
+            .take(limit)
+            .orderBy(`user.${sortBy}`, order);
+
+        // --- Global search (OR across multiple fields) ---
+        if (searchTerm) {
+            qb.andWhere(
+                '(user.firstName ILIKE :search OR user.lastName ILIKE :search OR user.email ILIKE :search)',
+                { search: `%${searchTerm}%` },
+            );
+        }
+
+        // --- Apply string filters ---
+        const STRING_FIELDS = ['firstName', 'lastName', 'email', 'patronymic'] as const;
+        for (const field of STRING_FIELDS) {
+            const filter = parsedFilters[field] as StringFilterDto | undefined;
+            if (!filter?.operator || filter.value === undefined) continue;
+
+            const param = `${field}Val`;
+            switch (filter.operator) {
+                case 'equal':
+                    qb.andWhere(`user.${field} = :${param}`, { [param]: filter.value });
+                    break;
+                case 'not-equal':
+                    qb.andWhere(`user.${field} != :${param}`, { [param]: filter.value });
+                    break;
+                case 'contain':
+                    qb.andWhere(`user.${field} ILIKE :${param}`, { [param]: `%${filter.value}%` });
+                    break;
+                case 'not-contain':
+                    qb.andWhere(`user.${field} NOT ILIKE :${param}`, { [param]: `%${filter.value}%` });
+                    break;
+            }
+        }
+
+        // --- Apply date filter ---
+        if (parsedFilters.createdAt) {
+            const dateFilter = parsedFilters.createdAt as DateFilterDto;
+            switch (dateFilter.operator) {
+                case 'less':
+                    qb.andWhere('user.createdAt <= :createdAtVal', { createdAtVal: dateFilter.value });
+                    break;
+                case 'more':
+                    qb.andWhere('user.createdAt >= :createdAtVal', { createdAtVal: dateFilter.value });
+                    break;
+                case 'between':
+                    if (!dateFilter.valueTo) {
+                        throw new BadRequestException('valueTo is required for "between" operator on createdAt');
+                    }
+                    qb.andWhere('user.createdAt BETWEEN :createdAtFrom AND :createdAtTo', {
+                        createdAtFrom: dateFilter.value,
+                        createdAtTo: dateFilter.valueTo,
+                    });
+                    break;
+            }
+        }
+
+        // --- Apply roleId filter ---
+        if (parsedFilters.roleId) {
+            qb.andWhere('role.id = :roleId', { roleId: parsedFilters.roleId });
+        }
+
+        const [data, total] = await qb.getManyAndCount();
+        const pageCount = Math.ceil(total / limit);
+
+        return { data, meta: { total, page, limit, pageCount } };
     }
 
     async getRoles(
