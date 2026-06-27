@@ -21,7 +21,7 @@ export async function install(dataSource: DataSource) {
         console.log(`✅ Role Пользователь created`);
     }
 
-    let permissionAdmin = await permissionRepository.findOne({ where: { roleId : roleAdmin.id }})
+    let permissionAdmin = await permissionRepository.findOne({ where: { roleId: roleAdmin.id } })
     if (!permissionAdmin) {
         permissionAdmin = await permissionRepository.create({ roleId: roleAdmin.id, modelName: 'ADMIN', access: '3' });
         await permissionRepository.save(permissionAdmin);
@@ -45,6 +45,25 @@ export async function install(dataSource: DataSource) {
         console.log(`✅ Admin user created with email admin@storez.ru and password !Admin123`);
     }
 
+    // User Datas Demo
+    const countUsers = 250;
+    const baseRole = roleUser;
+    for (let i = 1; i <= countUsers; i++) {
+        const email = `test${i}@storez.ru`;
+        const password = `test${i}pass`;
+        const firstName = `Test${i}`;
+        const lastName = `Lastname${i}`;
+        const userNew: any = {
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            password: password,
+            role: baseRole
+        }
+        const user = userRepository.create(userNew);
+        await userRepository.save(user);
+        console.log(`✅ User ${email} created with password ${password}`);
+    }
 }
 
 export async function runSeed(dataSource: DataSource) {

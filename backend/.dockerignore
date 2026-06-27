@@ -20,3 +20,4 @@ coverage
 uploads/*
 !.uploads/.gitkeep
 *.tsbuildinfo
+package-lock.json
