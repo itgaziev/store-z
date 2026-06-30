@@ -8,6 +8,7 @@ import * as bcrypt from 'bcrypt'
 import { UpdateUserDto } from './dto/update-user.dto';
 import { FindUsersQueryDto } from './dto/find-users-query.dto';
 import { DateFilterDto, StringFilterDto, UserFilters } from './dto/filter-value.dto';
+import { FindUsersBodyDto } from './dto/find-users-body.dto';
 
 @Injectable()
 export class UsersService {
@@ -128,6 +129,124 @@ export class UsersService {
         // --- Apply roleId filter ---
         if (parsedFilters.roleId) {
             qb.andWhere('role.id = :roleId', { roleId: parsedFilters.roleId });
+        }
+
+        const [data, total] = await qb.getManyAndCount();
+        const pageCount = Math.ceil(total / limit);
+
+        return { data, meta: { total, page, limit, pageCount } };
+    }
+
+    async findAllByBody(
+        body: FindUsersBodyDto,
+    ): Promise<{ data: User[]; meta: { total: number; page: number; limit: number; pageCount: number } }> {
+        const {
+            page = 1,
+            limit = 10,
+            sort = 'createdAt',
+            sortType = 'DESC',
+            searchTerm,
+            filters = [],
+        } = body;
+
+        const qb = this.usersRepository
+            .createQueryBuilder('user')
+            .leftJoinAndSelect('user.role', 'role')
+            .withDeleted()
+            .skip((page - 1) * limit)
+            .take(limit)
+            .orderBy(`user.${sort}`, sortType);
+
+        // --- Global search (OR across firstName, lastName, email) ---
+        if (searchTerm?.trim()) {
+            qb.andWhere(
+                '(user.firstName ILIKE :search OR user.lastName ILIKE :search OR user.email ILIKE :search)',
+                { search: `%${searchTerm.trim()}%` },
+            );
+        }
+
+        // --- Apply per-field filters (AND logic) ---
+        for (const filter of filters) {
+            const { key, operator, value } = filter;
+            const paramKey = `${key}_${operator}_${Math.random().toString(36).slice(2, 7)}`;
+
+            switch (key) {
+                // ── String fields ──────────────────────────────────────────────
+                case 'firstName':
+                case 'lastName':
+                case 'email':
+                case 'patronymic': {
+                    switch (operator) {
+                        case 'equal':
+                            qb.andWhere(`user.${key} = :${paramKey}`, { [paramKey]: value });
+                            break;
+                        case 'not-equal':
+                            qb.andWhere(`user.${key} != :${paramKey}`, { [paramKey]: value });
+                            break;
+                        case 'contain':
+                            qb.andWhere(`user.${key} ILIKE :${paramKey}`, { [paramKey]: `%${value}%` });
+                            break;
+                        case 'not-contain':
+                            qb.andWhere(`user.${key} NOT ILIKE :${paramKey}`, { [paramKey]: `%${value}%` });
+                            break;
+                        default:
+                            throw new BadRequestException(
+                                `Operator "${operator}" is not supported for field "${key}"`,
+                            );
+                    }
+                    break;
+                }
+
+                // ── Role ID (UUID equality) ─────────────────────────────────
+                case 'roleId': {
+                    switch (operator) {
+                        case 'equal':
+                            qb.andWhere('role.id = :roleId', { roleId: value });
+                            break;
+                        case 'not-equal':
+                            qb.andWhere('role.id != :roleId', { roleId: value });
+                            break;
+                        default:
+                            throw new BadRequestException(
+                                `Operator "${operator}" is not supported for field "roleId". Use "equal" or "not-equal"`,
+                            );
+                    }
+                    break;
+                }
+
+                // ── createdAt (date range) ──────────────────────────────────
+                case 'createdAt': {
+                    switch (operator) {
+                        case 'less':
+                            qb.andWhere('user.createdAt <= :createdAtVal', { createdAtVal: value });
+                            break;
+                        case 'more':
+                            qb.andWhere('user.createdAt >= :createdAtVal', { createdAtVal: value });
+                            break;
+                        case 'between': {
+                            const parts = value.split('|');
+                            if (parts.length !== 2 || !parts[0] || !parts[1]) {
+                                throw new BadRequestException(
+                                    'For "between" operator on "createdAt", provide two dates separated by "|" (e.g. "2026-01-01|2026-06-28")',
+                                );
+                            }
+                            qb.andWhere('user.createdAt BETWEEN :createdAtFrom AND :createdAtTo', {
+                                createdAtFrom: parts[0].trim(),
+                                createdAtTo: parts[1].trim(),
+                            });
+                            break;
+                        }
+                        default:
+                            throw new BadRequestException(
+                                `Operator "${operator}" is not supported for field "createdAt". Use "less", "more", or "between"`,
+                            );
+                    }
+                    break;
+                }
+
+                default:
+                    throw new BadRequestException(`Unknown filter key: "${key}"`);
+            }
         }
 
         const [data, total] = await qb.getManyAndCount();

@@ -4,7 +4,7 @@ import { TableSidebar } from "@/components/tables/TableSidebar";
 import { StoreTable } from "@/components/tables/StoreTable";
 import { userService } from "@/lib/services/users.services";
 import { IPaginatedResponse } from "@/lib/types/paginates.types";
-import { SortDirection } from "@/lib/types/table.types";
+import { IFilterItem, SortDirection } from "@/lib/types/table.types";
 import { IUserColumn, IUserTableRow, UserColumns, UserFilterConfig } from "@/lib/types/users.types";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { SearchIcon } from "lucide-react";
@@ -16,13 +16,28 @@ import { DEMO_TREE } from "@/data/demo";
 export default function UsersPage() {
     const [columns] = useState<IUserColumn[]>(UserColumns);
     const [treeData] = useState<TreeNodeData[]>(DEMO_TREE);
+
+    // Глобальный поиск (по нескольким полям через OR на бэкенде)
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortBy, setSortBy] = useState<string>('id');
+
+    // Сортировка
+    const [sortBy, setSortBy] = useState<string>('createdAt');
     const [sortDirection, setSortDirection] = useState<SortDirection>('DESC');
 
+    // Полевые фильтры из боковой панели (AND-логика на бэкенде)
+    const [filters, setFilters] = useState<IFilterItem[]>([]);
+
     const { data, isLoading, hasNextPage, fetchNextPage, isFetchingNextPage, status } = useInfiniteQuery({
-        queryKey: ['users', searchTerm, sortBy, sortDirection],
-        queryFn: async ({ pageParam = 1 }) => userService.getAllRow(pageParam, 10, sortBy, sortDirection, searchTerm),
+        queryKey: ['users', searchTerm, sortBy, sortDirection, filters],
+        queryFn: async ({ pageParam = 1 }) =>
+            userService.findAllByBody({
+                page: pageParam,
+                limit: 10,
+                sort: sortBy,
+                sortType: sortDirection,
+                searchTerm: searchTerm || undefined,
+                filters: filters.length > 0 ? filters : undefined,
+            }),
         getNextPageParam: (lastPage: IPaginatedResponse<IUserTableRow>) => {
             const { page, pageCount } = lastPage.meta;
             return page < pageCount ? page + 1 : undefined;
@@ -49,9 +64,37 @@ export default function UsersPage() {
         setSearchTerm(value);
     }
 
-    const onFilterByValue = (columnId: string, value: string) => {
-        console.log('Filter by value', columnId, value);
+    const handleFilter = (newFilters: IFilterItem[]) => {
+        setFilters(newFilters);
     }
+
+    const handleReset = () => {
+        setFilters([]);
+    }
+
+    /**
+     * Вызывается из контекстного меню таблицы (ПКМ → «Отфильтровать по этому значению»).
+     * Добавляет/заменяет IFilterItem с operator 'equal' для выбранной колонки.
+     *
+     * Фильтруются только строковые поля, которые принимает бэкенд.
+     * Колонки со значениями-трансформациями (createdAt, isActive, roleName, id)
+     * игнорируются — их отображаемые значения не совпадают с raw-данными бэкенда.
+     */
+    const onFilterByValue = (columnId: string, value: string) => {
+        // Поля, которые можно передавать как 'equal' прямо в filters[]
+        const DIRECTLY_FILTERABLE: string[] = ['firstName', 'lastName', 'email', 'patronymic'];
+
+        if (!DIRECTLY_FILTERABLE.includes(columnId)) return;
+
+        const newItem: IFilterItem = { key: columnId, operator: 'equal', value: String(value) };
+
+        // Заменяем существующий фильтр по этому полю или добавляем новый
+        setFilters(prev => {
+            const without = prev.filter(f => f.key !== columnId);
+            return [...without, newItem];
+        });
+    }
+
 
     return (
         <div className="h-[calc(100vh-8rem)] flex flex-col overflow-x-hidden">
@@ -106,9 +149,14 @@ export default function UsersPage() {
 
                 {/* ПРАВАЯ ПАНЕЛЬ */}
                 <div className="w-100 shrink-0 bg-white border border-gray-200 p-4">
-                    <TableSidebar treeData={treeData} filterConfig={UserFilterConfig} onFilter={(value) => console.log(value)} />
+                    <TableSidebar
+                        treeData={treeData}
+                        filterConfig={UserFilterConfig}
+                        onFilter={handleFilter}
+                        onReset={handleReset}
+                    />
                 </div>
             </div>
         </div>
     );
-}
+}

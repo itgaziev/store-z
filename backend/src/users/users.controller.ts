@@ -10,6 +10,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ModelNameEnum } from '@/common/enums/model-name.enum';
 import { AccessEnum } from '@/common/enums/access.enum';
 import { FindUsersQueryDto } from './dto/find-users-query.dto';
+import { FindUsersBodyDto } from './dto/find-users-body.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -17,6 +18,14 @@ import { FindUsersQueryDto } from './dto/find-users-query.dto';
 @ApiBearerAuth()
 export class UsersController {
     constructor(private readonly usersService: UsersService) { }
+
+    @Post('list')
+    @Permissions({ model: ModelNameEnum.USER, access: AccessEnum.READ })
+    @ApiOperation({ summary: 'Get users list with filters (POST body)' })
+    @ApiResponse({ status: 200, description: 'Return paginated users list' })
+    findAllByBody(@Body() body: FindUsersBodyDto) {
+        return this.usersService.findAllByBody(body);
+    }
 
     @Post()
     @Permissions({ model: ModelNameEnum.USER, access: AccessEnum.WRITE })

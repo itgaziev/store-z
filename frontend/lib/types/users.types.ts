@@ -64,27 +64,42 @@ export const UserColumns: IUserColumn[] = [
 ]
 
 export const UserFilterConfig: IFilterTable[] = [
-    { id: 'searchTerm', title: 'Поиск по тексту', type: 'STRING', placeholder: 'Имя, email...' },
-    { id: 'count', title: 'Количество сотр.', type: 'NUMBER', placeholder: 'Кол. сотр.' },
-    { id: 'isActive', title: 'Активный', type: 'BOOLEAN' },
-    { id: 'createdDate', title: 'Дата создание', type: 'DATE' },
+    {
+        id: 'firstName',
+        title: 'Имя',
+        type: 'STRING',
+        placeholder: 'Введите имя...',
+    },
+    {
+        id: 'lastName',
+        title: 'Фамилия',
+        type: 'STRING',
+        placeholder: 'Введите фамилию...',
+    },
+    {
+        id: 'email',
+        title: 'Email',
+        type: 'STRING',
+        placeholder: 'Введите email...',
+    },
+    {
+        id: 'patronymic',
+        title: 'Отчество',
+        type: 'STRING',
+        placeholder: 'Введите отчество...',
+    },
     {
         id: 'roleId',
         title: 'Роль сотрудника',
         type: 'MODAL',
-        endpoint: '/users',
-        bindLabel: 'firstName',
+        endpoint: '/users/roles',
+        bindLabel: 'name',
         bindValue: 'id',
-        placeholder: 'Нажмите для выбора роли...'
+        placeholder: 'Нажмите для выбора роли...',
     },
     {
-        id: 'productType',
-        title: 'Вид товара',
-        type: 'SELECT',
-        options: [
-            { value: 'PRODUCT', label: 'Товар' },
-            { value: 'SERVICE', label: 'Услуга' },
-            { value: 'WORK', label: 'Работа' }
-        ]
+        id: 'createdAt',
+        title: 'Дата создания',
+        type: 'DATE',
     },
-]
+]

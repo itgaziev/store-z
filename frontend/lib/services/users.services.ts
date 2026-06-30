@@ -1,20 +1,23 @@
 import { axiosWithAuth } from "../api/interceptors";
 import { IPaginatedResponse } from "../types/paginates.types";
-import { IUser, IUserResponse, IUserTableRow } from "../types/users.types";
-import { formatDate, formatUtcDateDirectly } from "../utils";
+import { IUserResponse, IUserTableRow } from "../types/users.types";
+import { IFindByBodyRequest } from "../types/table.types";
+import { formatUtcDateDirectly } from "../utils";
 
 class UserService {
     private BASE_URL = '/users';
 
-    async getAll(page: number = 1, limit: number = 10, sortBy: string = 'createdAt', order: 'ASC' | 'DESC' = 'DESC', searchTerm: string = ''): Promise<IPaginatedResponse<IUserResponse>> {
-        const endpoint = `${this.BASE_URL}?page=${page}&limit=${limit}&sortBy=${sortBy}&order=${order}&searchTerm=${searchTerm}`;
-        const response = await axiosWithAuth.get<IPaginatedResponse<IUserResponse>>(endpoint);
-        return response.data;
-    }
+    /**
+     * Запрашивает список пользователей через POST /users/list.
+     * Тело запроса соответствует FindUsersBodyDto на бэкенде.
+     * Возвращает трансформированные строки таблицы IUserTableRow[].
+     */
+    async findAllByBody(body: IFindByBodyRequest): Promise<IPaginatedResponse<IUserTableRow>> {
+        const response = await axiosWithAuth.post<IPaginatedResponse<IUserResponse>>(
+            `${this.BASE_URL}/list`,
+            body,
+        );
 
-    async getAllRow(page: number = 1, limit: number = 10, sortBy: string = 'createdAt', order: 'ASC' | 'DESC' = 'DESC', searchTerm: string = ''): Promise<IPaginatedResponse<IUserTableRow>> {
-        const endpoint = `${this.BASE_URL}?page=${page}&limit=${limit}&sortBy=${sortBy}&order=${order}&searchTerm=${searchTerm}`;
-        const response = await axiosWithAuth.get<IPaginatedResponse<IUserResponse>>(endpoint);
         const transformedData: IUserTableRow[] = response.data.data.map(user => ({
             id: user.id,
             email: user.email,
@@ -25,7 +28,7 @@ class UserService {
             createdAt: formatUtcDateDirectly(user.createdAt),
             updatedAt: formatUtcDateDirectly(user.updatedAt),
             deletedAt: formatUtcDateDirectly(user.deletedAt),
-            roleName: user.role.name
+            roleName: user.role.name,
         }));
 
         return {
@@ -54,4 +57,4 @@ class UserService {
     }
 }
 
-export const userService = new UserService();
+export const userService = new UserService();

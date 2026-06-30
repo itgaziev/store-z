@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 import { Filter as FilterIcon, Network } from 'lucide-react';
 import { FilterView } from './FilterView';
 import { TreeView } from './TreeView';
-import { IFilterTable } from '@/lib/types/table.types';
+import { IFilterItem, IFilterTable } from '@/lib/types/table.types';
 import { TreeNodeData } from '@/lib/types/inerfaces';
 
 // ─── Типы ────────────────────────────────────────────────────────────────────
@@ -16,12 +16,13 @@ interface ITableSidebarProps {
     /** Данные древа. Если не переданы — вкладка «Древо» не отображается */
     treeData?: TreeNodeData[];
     filterConfig?: IFilterTable[];
-    onFilter?: (value: Record<string, any>, reset?: boolean) => void;
+    onFilter?: (filters: IFilterItem[]) => void;
+    onReset?: () => void;
 }
 
 // ─── Главный компонент ────────────────────────────────────────────────────────
 
-export const TableSidebar = ({ treeData, filterConfig, onFilter }: ITableSidebarProps) => {
+export const TableSidebar = ({ treeData, filterConfig, onFilter, onReset }: ITableSidebarProps) => {
     const hasTree = Boolean(treeData?.length);
     const hasFilter = Boolean(filterConfig?.length);
 
@@ -73,7 +74,7 @@ export const TableSidebar = ({ treeData, filterConfig, onFilter }: ITableSidebar
                     <TreeView data={treeData!} />
                 )}
                 {activeTab === 'filter' && hasFilter && (
-                    <FilterView config={filterConfig} onFilter={onFilter} />
+                    <FilterView config={filterConfig} onFilter={onFilter} onReset={onReset} />
                 )}
             </div>
         </div>
