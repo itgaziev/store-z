@@ -1,6 +1,6 @@
 import { axiosWithAuth } from "../api/interceptors";
 import { IPaginatedResponse } from "../types/paginates.types";
-import { IUserResponse, IUserTableRow } from "../types/users.types";
+import { ICreateUserDto, IRole, IUserResponse, IUserTableRow } from "../types/users.types";
 import { IFindByBodyRequest } from "../types/table.types";
 import { formatUtcDateDirectly } from "../utils";
 
@@ -37,6 +37,25 @@ class UserService {
         };
     }
 
+    /**
+     * Создаёт нового пользователя через POST /users.
+     */
+    async create(dto: ICreateUserDto): Promise<IUserResponse> {
+        const response = await axiosWithAuth.post<IUserResponse>(this.BASE_URL, dto);
+        return response.data;
+    }
+
+    /**
+     * Подгружает список ролей с пагинацией и поиском (GET /users/roles).
+     * Используется в FilterModal на странице создания пользователя.
+     */
+    async getRoles(page: number = 1, limit: number = 20, searchTerm?: string): Promise<IPaginatedResponse<IRole>> {
+        const params: Record<string, string | number> = { page, limit };
+        if (searchTerm?.trim()) params.searchTerm = searchTerm.trim();
+        const response = await axiosWithAuth.get<IPaginatedResponse<IRole>>(`${this.BASE_URL}/roles`, { params });
+        return response.data;
+    }
+
     async getById(id: string) {
 
     }
@@ -57,4 +76,5 @@ class UserService {
     }
 }
 
-export const userService = new UserService();
+export const userService = new UserService();
+

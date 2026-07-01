@@ -46,6 +46,15 @@ export interface IUserTableRow {
     roleName: string;
 }
 
+export interface ICreateUserDto {
+    email: string;
+    password: string;
+    firstName: string;
+    lastName: string;
+    patronymic?: string;
+    roleId?: string;
+}
+
 export interface IUserColumn extends Column {
     id: keyof IUserTableRow;
 }

@@ -7,10 +7,11 @@ import { IPaginatedResponse } from "@/lib/types/paginates.types";
 import { IFilterItem, SortDirection } from "@/lib/types/table.types";
 import { IUserColumn, IUserTableRow, UserColumns, UserFilterConfig } from "@/lib/types/users.types";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { SearchIcon } from "lucide-react";
+import { PlusIcon, SearchIcon } from "lucide-react";
 import { useState } from "react";
 import { TreeNodeData } from "@/lib/types/inerfaces";
 import { DEMO_TREE } from "@/data/demo";
+import Link from "next/link";
 
 
 export default function UsersPage() {
@@ -103,12 +104,13 @@ export default function UsersPage() {
             <div className="flex items-center justify-between gap-4 mb-4 bg-white border border-gray-200 p-2 rounded-lg">
                 { /* Action buttons go here */}
                 <div className="flex flex-2 items-center gap-4">
-                    <button className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors">
-                        Действие 1
-                    </button>
-                    <button className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
-                        Действие 2
-                    </button>
+                    <Link
+                        href="/dashboard/users/create"
+                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 transition-colors"
+                    >
+                        <PlusIcon className="w-4 h-4" />
+                        Создать пользователя
+                    </Link>
                 </div>
                 <div className="relative w-full flex-1">
                     <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -150,7 +152,6 @@ export default function UsersPage() {
                 {/* ПРАВАЯ ПАНЕЛЬ */}
                 <div className="w-100 shrink-0 bg-white border border-gray-200 p-4">
                     <TableSidebar
-                        treeData={treeData}
                         filterConfig={UserFilterConfig}
                         onFilter={handleFilter}
                         onReset={handleReset}
@@ -159,4 +160,4 @@ export default function UsersPage() {
             </div>
         </div>
     );
-}
+}
